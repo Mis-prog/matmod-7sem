@@ -1,2 +1,4 @@
 .idea/
-venv/
+.venv/
+cmake-build-debug-cygwin/
+cmake-build-debug-mingw/
