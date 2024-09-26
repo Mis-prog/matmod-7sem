@@ -6,17 +6,17 @@
 
 using namespace std;
 
-const double G = 6.67e-20;
+const double G = 6.67e-9;
 const double M1 = 2.0e30; // масса тела 1 (звезда), кг
 const double M2 = 6.4e23; // масса тела 2 (планета), кг
 const double M3 = 1.1e16; // масса астероида
-const double R1 = 696340; // радиус солнца
-const double R2 = 3390; //  радиус тела 2 (планета), км
-const double R12 = 228e6; // расстояние между телом 1 и телом 2, км
-const double U2 = 24; // начальная скорость тела 2, км/с
-const double R3 = 11.1; // радиус тела 3 (астероид), км
-const double R23 = 9.4e3; // расстояние между телом 2 и телом 3, км
-const double U3 = 2.14; //  начальная скорость тела 3, км/с
+const double R1 = 696340e3; // радиус солнца
+const double R2 = 3390e3; //  радиус тела 2 (планета), км
+const double R12 = 228e9; // расстояние между телом 1 и телом 2, км
+const double U2 = 24e3; // начальная скорость тела 2, км/с
+const double R3 = 11.1e3; // радиус тела 3 (астероид), км
+const double R23 = 9.4e6; // расстояние между телом 2 и телом 3, км
+const double U3 = 2.14e3; //  начальная скорость тела 3, км/с
 
 double r12(double x2, double y2) {
     return sqrt(x2 * x2 + y2 * y2);
@@ -32,7 +32,7 @@ double r23(double x2, double y2, double x3, double y3) {
     return sqrt(diff_x * diff_x + diff_y * diff_y);
 }
 
-int system(double t, const double y[], double f[], void *params) {
+int system(double t,const double y[], double f[], void *params) {
     double x2 = y[0], vx2 = y[1];
     double y2 = y[2], vy2 = y[3];
     double x3 = y[4], vx3 = y[5];
@@ -42,7 +42,6 @@ int system(double t, const double y[], double f[], void *params) {
     double r_13 = r13(x3, y3);
     double r_23 = r23(x2, y2, x3, y3);
 
-    // Уравнения движения
     f[0] = vx2;
     f[1] = -G * M1 * x2 / (r_12 * r_12 * r_12) + G * M3 * (x3 - x2) / (r_23 * r_23 * r_23);
 
@@ -60,19 +59,19 @@ int system(double t, const double y[], double f[], void *params) {
 
 int main() {
     double y[8]; // Вектор состояния
-    y[0] = R1 + R12 + R2; // начальное положение x тела 2
+    y[0] = (R1 + R12 + R2); // начальное положение x тела 2
     y[1] = 0; // начальная скорость по x тела 2
     y[2] = 0; // начальное положение y тела 2
     y[3] = U2; // начальная скорость по y тела 2 в м/с
-    y[4] = R1 + R12 + 2 * R2 + R23 + R3; // начальное положение x тела 3
+    y[4] = (R1 + R12 + 2 * R2 + R23 + R3); // начальное положение x тела 3
     y[5] = 0; // начальная скорость по x тела 3
     y[6] = 0; // начальное положение y тела 3
-    y[7] = U3 + U2; // начальная скорость по y тела 3 в м/с
+    y[7] = (U3 + U2); // начальная скорость по y тела 3 в м/с
 
 
     double t = 0.0; // начальное время
     double t_end = 60 * 60 * 24 * 687; // конечное время
-    int n = 10000000;
+    int n = 1000000;
     double h = t_end / n;
     gsl_odeiv2_system sys = {system, nullptr, 8, nullptr};
     gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk4, h, 1e-3, 1e-3);
