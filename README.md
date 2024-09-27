@@ -4,5 +4,13 @@
 Сборка библиотеки 
 ---
 ```bash
-
+mkdir build
+cd build
+cmake ..
 ```
+
+Зависимости 
+---
+Cygwin 
+Cmake
+GSL
