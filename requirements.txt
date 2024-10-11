@@ -1,7 +1,3 @@
-numpy
 pandas
-scipy
 matplotlib
-jupyter
 scipy
-tqdm
