@@ -102,7 +102,7 @@ int main() {
     gsl_odeiv2_system sys = {system, nullptr, 12, nullptr};
     gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new(&sys, gsl_odeiv2_step_rk8pd, h, 1e-2, 1e-2);
 
-    ofstream fout("../../../../labs/lab1/misha/output.txt");
+    ofstream fout("../../../../../labs/lab1/misha/plot/output.txt");
     fout << "x1 y1 x2 y2 x3 y3\n";
     double t_curr = t;
     while (t_curr < t_end) {

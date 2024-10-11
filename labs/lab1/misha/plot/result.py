@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Чтение данных
-data = pd.read_csv('output.txt', sep=' ')
+data = pd.read_csv('../out/output.txt', sep=' ')
 
 end = 1660
 # plt.plot(data.x1,data.y1)
