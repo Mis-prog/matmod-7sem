@@ -88,14 +88,14 @@ int main() {
     // Параметры интегрирования
     double t = 0.0;                           // начальное время
     double t_end = 60. * 60 * 24 * 365 ;     // конечное время (1000 лет)
-    int n_steps = 1000;                   // количество шагов
+    int n_steps = 100000;                   // количество шагов
     double h = t_end / n_steps;// шаг интегрирования
 
     std::cout << "Шаг: " << h << std::endl;
 
     gsl_odeiv2_system sys = {Physics::calculateForces, nullptr, 8, nullptr};
     gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new(
-            &sys, gsl_odeiv2_step_rkf45, h, 1e-6, 1e-6
+            &sys, gsl_odeiv2_step_rk8pd, h, 1e-6, 1e-6
     );
 
     // Открытие файла для записи результатов
@@ -117,10 +117,10 @@ int main() {
                                      std::string(gsl_strerror(status)));
         }
 
-        if (checkFullOrbit(y[0], y[2])) {
-            std::cout << "Полная орбита астероида достигнута на  " << i << " шаге\n";
-            break;
-        }
+//        if (checkFullOrbit(y[0], y[2])) {
+//            std::cout << "Полная орбита астероида достигнута на  " << i << " шаге\n";
+//            break;
+//        }
 
 
         fout <<
