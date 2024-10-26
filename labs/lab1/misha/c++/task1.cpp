@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include "progressbar.hpp"
+#include "omp.h"
 
 // Физические константы
 struct Constants {
@@ -124,13 +125,16 @@ int main() {
             &sys, gsl_odeiv2_step_rkf45, h, 1e-6, 1e-6
     );
 
-    std::ofstream fout("../../../../../labs/lab1/misha/plot/output.csv");
+    std::ofstream fout_main("../../../../../labs/lab1/misha/plot/path_full.csv");
     std::ofstream fout_log("../../../../../labs/lab1/misha/plot/log.txt");
 
-    fout << "x2 y2 x3 y3\n";
+    fout_main << "x2 y2 x3 y3\n";
 
-    std::vector<std::vector<double>> orbitsX(4);
-    std::vector<std::vector<double>> orbitsY(4);
+    std::vector<std::vector<double>> orbitsX_Spytnik(4);
+    std::vector<std::vector<double>> orbitsY_Spytnik(4);
+
+    std::vector<double> orbitsX_Planeta;
+    std::vector<double> orbitsY_Planeta;
 
 
     double t_curr = t;
@@ -154,46 +158,56 @@ int main() {
 
         switch (count) {
             case 1:
-                orbitsX[0].push_back(y[4]);
-                orbitsY[0].push_back(y[6]);
+                orbitsX_Spytnik[0].push_back(y[4]);
+                orbitsY_Spytnik[0].push_back(y[6]);
                 break;
             case 100:
-                orbitsX[1].push_back(y[4]);
-                orbitsY[1].push_back(y[6]);
+                orbitsX_Spytnik[1].push_back(y[4]);
+                orbitsY_Spytnik[1].push_back(y[6]);
                 break;
             case 500:
-                orbitsX[2].push_back(y[4]);
-                orbitsY[2].push_back(y[6]);
+                orbitsX_Spytnik[2].push_back(y[4]);
+                orbitsY_Spytnik[2].push_back(y[6]);
                 break;
             case 1000:
-                orbitsX[3].push_back(y[4]);
-                orbitsY[3].push_back(y[6]);
+                orbitsX_Spytnik[3].push_back(y[4]);
+                orbitsY_Spytnik[3].push_back(y[6]);
+
+                orbitsX_Planeta.push_back(y[0]);
+                orbitsY_Planeta.push_back(y[2]);
                 break;
         }
 
-        fout <<
-             y[0] << " " << y[2] << " "  // координаты планеты
-             << y[4] << " " << y[6] << "\n"; // координаты астероида
+        fout_main <<
+                  y[0] << " " << y[2] << " "  // координаты планеты
+                  << y[4] << " " << y[6] << "\n"; // координаты астероида
 
         curr_i++;
     }
 
     gsl_odeiv2_driver_free(d);
-    fout.close();
+    fout_main.close();
     fout_log.close();
 
 
-    for (int i = 0; i < orbitsX.size(); i++) {
-        std::ofstream fout("../../../../../labs/lab1/misha/plot/out_" + std::to_string(i) + ".csv");
-        fout << "x y\n";
-        for (int j = 0; j < orbitsX[i].size(); j++) {
-            fout << orbitsX[i][j] << " " << orbitsY[i][j] << std::endl;
+    for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
+        std::ofstream fout_spytnik("../../../../../labs/lab1/misha/plot/path_spytnik_" + std::to_string(i) + ".csv");
+        fout_spytnik << "x y\n";
+        for (int j = 0; j < orbitsX_Spytnik[i].size(); j++) {
+            fout_spytnik << orbitsX_Spytnik[i][j] << " " << orbitsY_Spytnik[i][j] << std::endl;
         }
-        fout.close();
+        fout_spytnik.close();
     }
 
-    orbitsX.clear();
-    orbitsY.clear();
+    std::ofstream fout_planeta("../../../../../labs/lab1/misha/plot/path_planeta_" + std::to_string(3) + ".csv");
+    fout_planeta << "x y\n";
+    for (int j = 0; j < orbitsX_Planeta.size(); j++) {
+        fout_planeta << orbitsX_Planeta[j] << " " << orbitsY_Planeta[j] << std::endl;
+    }
+    fout_planeta.close();
+
+    orbitsX_Spytnik.clear();
+    orbitsY_Spytnik.clear();
 
     std::cout << "\nРасчет успешно завершен\n" << "Количество пересечений " << count;
 //    <<"\nКол-во шагов: " << curr_i << "\nВремя: " << t_end - t_curr;

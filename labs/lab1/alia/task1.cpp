@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+#include <vector>
+#include "progressbar.hpp"
 
 // Физические константы
 struct Constants {
@@ -71,8 +73,30 @@ public:
     }
 };
 
+bool check_interseption_start_point(double x, double y) {
+    double dx = Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3 - x;
+    double dy = y;
+    return (sqrt(dx * dx + dy * dy) < 2e8);
+}
+
+bool check_interseption_start_point_udp2(double x, double y) {
+    double initial_x = Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3;
+    double initial_y = 0.0;
+
+    double angle_current = std::atan2(y, x);
+    double angle_initial = std::atan2(initial_y, initial_x);
+
+    double angle_difference = std::abs(angle_current - angle_initial);
+    if (angle_difference > M_PI) angle_difference = 2 * M_PI - angle_difference;
+
+
+    double threshold_angle = 0.000285 * M_PI;
+
+    return angle_difference < threshold_angle;
+}
+
+
 int main() {
-    // Начальные условия (8 переменных: x,vx,y,vy для планеты и астероида)
     double y[8] = {
             Constants::R1 + Constants::R12 + Constants::R2, 0, 0,
             Constants::U2,                    // планета (x,vx,y,vy)
@@ -80,31 +104,44 @@ int main() {
             Constants::U3 + Constants::U2  // астероид (x,vx,y,vy)
     };
 
-    // Параметры интегрирования
-    double t = 0.0;                           // начальное время
-    double t_end = 60.*60*24*365*1000;     // конечное время (1000 лет)
-    int n_steps = 5000000;                   // количество шагов
-    double h = t_end / n_steps;// шаг интегрирования
+    double t = 0.0;// начальное время
+    double t_circle_end = 60. * 60 * 24 * 365;
+    double t_end = t_circle_end * 1200;     // конечное время
+    double h = 9000;// шаг интегрирования
+    int n_steps = round(t_end / h);// количество шагов
+    progressbar bar(n_steps);
+    bar.set_todo_char(" ");
+    bar.set_done_char("█");
+    bar.set_opening_bracket_char("{");
+    bar.set_closing_bracket_char("}");
 
-    std::cout << "Шаг: " << h << std::endl;
-    std::cout << "Кол-во шагов/cек*год: " << (60.*60*24*365)/h << std::endl;
-    // Настройка решателя GSL
+
+    std::cout << "Шаг: " << h << ",кол-во шагов: " << n_steps << std::endl;
+
     gsl_odeiv2_system sys = {Physics::calculateForces, nullptr, 8, nullptr};
     gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new(
             &sys, gsl_odeiv2_step_rkf45, h, 1e-6, 1e-6
     );
 
-    // Открытие файла для записи результатов
-    std::ofstream fout("../../../../labs/lab1/alia/output.txt");
-    if (!fout.is_open()) {
-        throw std::runtime_error("Не удалось открыть файл для записи");
-    }
+    std::ofstream fout_main("../../../../labs/lab1/alia/path_full.csv");
+    std::ofstream fout_log("../../../../labs/lab1/alia/log.txt");
 
-    fout << "x2 y2 x3 y3\n";  // заголовок файла
+    fout_main << "x2 y2 x3 y3\n";
 
-    // Основной цикл интегрирования
+    std::vector<std::vector<double>> orbitsX_Spytnik(4);
+    std::vector<std::vector<double>> orbitsY_Spytnik(4);
+
+    std::vector<double> orbitsX_Planeta;
+    std::vector<double> orbitsY_Planeta;
+
+
     double t_curr = t;
+    int curr_i = 0;
+    int prev_i = 0;
+    int count = 0;
     while (t_curr < t_end) {
+        bar.update();
+
         int status = gsl_odeiv2_driver_apply(d, &t_curr, t_curr + h, y);
 
         if (status != GSL_SUCCESS) {
@@ -112,17 +149,65 @@ int main() {
                                      std::string(gsl_strerror(status)));
         }
 
+        if (check_interseption_start_point_udp2(y[4], y[6])) {
+            fout_log << "Пересечение на шаге " << curr_i << std::endl;
+            count++;
+        }
 
-        fout <<
-             y[0] << " " << y[2] << " "  // координаты планеты
-             << y[4] << " " << y[6] << "\n"; // координаты астероида
-        t_curr += h;
+        switch (count) {
+            case 1:
+                orbitsX_Spytnik[0].push_back(y[4]);
+                orbitsY_Spytnik[0].push_back(y[6]);
+                break;
+            case 100:
+                orbitsX_Spytnik[1].push_back(y[4]);
+                orbitsY_Spytnik[1].push_back(y[6]);
+                break;
+            case 500:
+                orbitsX_Spytnik[2].push_back(y[4]);
+                orbitsY_Spytnik[2].push_back(y[6]);
+                break;
+            case 1000:
+                orbitsX_Spytnik[3].push_back(y[4]);
+                orbitsY_Spytnik[3].push_back(y[6]);
+
+                orbitsX_Planeta.push_back(y[0]);
+                orbitsY_Planeta.push_back(y[2]);
+                break;
+        }
+
+        fout_main <<
+                  y[0] << " " << y[2] << " "  // координаты планеты
+                  << y[4] << " " << y[6] << "\n"; // координаты астероида
+
+        curr_i++;
     }
 
-    // Освобождение ресурсов
     gsl_odeiv2_driver_free(d);
-    fout.close();
+    fout_main.close();
+    fout_log.close();
 
-    std::cout << "Расчет успешно завершен\n";
+
+    for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
+        std::ofstream fout_spytnik("../../../../labs/lab1/alia/path_spytnik_" + std::to_string(i) + ".csv");
+        fout_spytnik << "x y\n";
+        for (int j = 0; j < orbitsX_Spytnik[i].size(); j++) {
+            fout_spytnik << orbitsX_Spytnik[i][j] << " " << orbitsY_Spytnik[i][j] << std::endl;
+        }
+        fout_spytnik.close();
+    }
+
+    std::ofstream fout_planeta("../../../../labs/lab1/alia/path_planeta_" + std::to_string(3) + ".csv");
+    fout_planeta << "x y\n";
+    for (int j = 0; j < orbitsX_Planeta.size(); j++) {
+        fout_planeta << orbitsX_Planeta[j] << " " << orbitsY_Planeta[j] << std::endl;
+    }
+    fout_planeta.close();
+
+    orbitsX_Spytnik.clear();
+    orbitsY_Spytnik.clear();
+
+    std::cout << "\nРасчет успешно завершен\n" << "Количество пересечений " << count;
+//    <<"\nКол-во шагов: " << curr_i << "\nВремя: " << t_end - t_curr;
     return 0;
 }
