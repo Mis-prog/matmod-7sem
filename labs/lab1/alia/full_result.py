@@ -16,10 +16,10 @@ def part_drawe():
     data2 = pd.read_csv('path_spytnik_1.csv', sep=' ')
     data3 = pd.read_csv('path_spytnik_2.csv', sep=' ')
     data4 = pd.read_csv('path_spytnik_3.csv', sep=' ')
-    plt.plot(data1.x, data1.y, label='1')
-    plt.plot(data2.x, data2.y, label='100')
-    plt.plot(data3.x, data3.y, label='500')
-    plt.plot(data4.x, data4.y, label='1000')
+    plt.plot(data1.x, data1.y, ls='--', label='1')
+    plt.plot(data2.x, data2.y, ls='--', label='100')
+    plt.plot(data3.x, data3.y, ls='--', label='500')
+    plt.plot(data4.x, data4.y, ls='--', label='1000')
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -59,4 +59,13 @@ def part_drawe_bias():
     plt.show()
 
 
-part_drawe()
+def thousandth_branch_drawe():
+    spytnik = pd.read_csv('path_spytnik_3.csv', sep=' ')
+    planeta = pd.read_csv('path_planeta_3.csv',sep=' ')
+    plt.plot(spytnik.x, spytnik.y, label='Фобос')
+    plt.plot(planeta.x, planeta.y, label='Марс')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+thousandth_branch_drawe()

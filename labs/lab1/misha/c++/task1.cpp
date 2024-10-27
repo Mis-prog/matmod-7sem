@@ -92,7 +92,7 @@ bool check_interseption_start_point_udp2(double x, double y) {
     if (angle_difference > M_PI) angle_difference = 2 * M_PI - angle_difference;
 
 
-    double threshold_angle = 0.00015 * M_PI;
+    double threshold_angle = 0.000085 * M_PI;
 
     return angle_difference < threshold_angle;
 }
@@ -109,7 +109,7 @@ int main() {
     double t = 0.0;// начальное время
     double t_circle_end = 60. * 60 * 24 * 365;
     double t_end = t_circle_end * 2000;     // конечное время
-    double h = 9000;// шаг интегрирования
+    double h = 5000;// шаг интегрирования
     int n_steps = round(t_end / h);// количество шагов
     progressbar bar(n_steps);
     bar.set_todo_char(" ");
@@ -122,7 +122,7 @@ int main() {
 
     gsl_odeiv2_system sys = {Physics::calculateForces, nullptr, 8, nullptr};
     gsl_odeiv2_driver *d = gsl_odeiv2_driver_alloc_y_new(
-            &sys, gsl_odeiv2_step_rkf45, h, 1e-6, 1e-6
+            &sys, gsl_odeiv2_step_rk8pd, h, 1e-6, 1e-6
     );
 
     std::ofstream fout_main("../../../../../labs/lab1/misha/plot/path_full.csv");
