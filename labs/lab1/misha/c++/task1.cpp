@@ -133,8 +133,8 @@ int main() {
     std::vector<std::vector<double>> orbitsX_Spytnik(4);
     std::vector<std::vector<double>> orbitsY_Spytnik(4);
 
-    std::vector<double> orbitsX_Planeta;
-    std::vector<double> orbitsY_Planeta;
+    std::vector<std::vector<double>> orbitsX_Planeta(4);
+    std::vector<std::vector<double>> orbitsY_Planeta(4);
 
 
     double t_curr = t;
@@ -160,21 +160,30 @@ int main() {
             case 1:
                 orbitsX_Spytnik[0].push_back(y[4]);
                 orbitsY_Spytnik[0].push_back(y[6]);
+
+                orbitsX_Planeta[0].push_back(y[0]);
+                orbitsY_Planeta[0].push_back(y[2]);
                 break;
             case 100:
                 orbitsX_Spytnik[1].push_back(y[4]);
                 orbitsY_Spytnik[1].push_back(y[6]);
+
+                orbitsX_Planeta[1].push_back(y[0]);
+                orbitsY_Planeta[1].push_back(y[2]);
                 break;
             case 500:
                 orbitsX_Spytnik[2].push_back(y[4]);
                 orbitsY_Spytnik[2].push_back(y[6]);
+
+                orbitsX_Planeta[2].push_back(y[0]);
+                orbitsY_Planeta[2].push_back(y[2]);
                 break;
             case 1000:
                 orbitsX_Spytnik[3].push_back(y[4]);
                 orbitsY_Spytnik[3].push_back(y[6]);
 
-                orbitsX_Planeta.push_back(y[0]);
-                orbitsY_Planeta.push_back(y[2]);
+                orbitsX_Planeta[3].push_back(y[0]);
+                orbitsY_Planeta[3].push_back(y[2]);
                 break;
         }
 
@@ -199,12 +208,14 @@ int main() {
         fout_spytnik.close();
     }
 
-    std::ofstream fout_planeta("../../../../../labs/lab1/misha/plot/path_planeta_" + std::to_string(3) + ".csv");
-    fout_planeta << "x y\n";
-    for (int j = 0; j < orbitsX_Planeta.size(); j++) {
-        fout_planeta << orbitsX_Planeta[j] << " " << orbitsY_Planeta[j] << std::endl;
+    for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
+        std::ofstream fout_planeta("../../../../../labs/lab1/misha/plot/path_planeta_" + std::to_string(i) + ".csv");
+        fout_planeta << "x y\n";
+        for (int j = 0; j < orbitsX_Planeta[i].size(); j++) {
+            fout_planeta << orbitsX_Planeta[i][j] << " " << orbitsY_Planeta[i][j] << std::endl;
+        }
+        fout_planeta.close();
     }
-    fout_planeta.close();
 
     orbitsX_Spytnik.clear();
     orbitsY_Spytnik.clear();
