@@ -3,9 +3,9 @@ import pandas as pd
 
 
 def full_drawe():
-    data = pd.read_csv('path_full.csv', sep=' ')
+    data = pd.read_csv('../res_task1/path_full.csv', sep=' ')
     plt.plot(data.x2, data.y2, label='Марс')
-    plt.plot(data.x3, data.y3, ls='--', label='Фобос')
+    # plt.plot(data.x3, data.y3, ls='--', label='Фобос')
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -97,7 +97,6 @@ def thousandth_branch_drawe():
     plt.plot(spytnik.x, spytnik.y, label='Фобос')
     plt.plot(planeta.x, planeta.y, label='Марс')
     plt.legend()
-    plt.grid(True)
     plt.show()
 
-part_drawe()
+full_drawe()
