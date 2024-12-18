@@ -27,6 +27,9 @@ struct Constants {
 // Вспомогательные функции
 class Physics {
 public:
+    static bool intersection;
+    static bool fast_intersection;
+
     static double distance(double x1, double y1, double x2, double y2) {
         double dx = x2 - x1;
         double dy = y2 - y1;
@@ -65,33 +68,6 @@ public:
                Constants::G * Constants::M2 * (y2 - y3) / std::pow(r_23, 3);
     }
 
-    static bool intersection(double x, double y, double eps) {
-        double x0 = Constants::R1 + Constants::R12 + Constants::R2;
-        double y0 = 0.;
-        if (distance(x0, y0, x, y) < eps) {
-            //            cout << x - x0 << " " << y - y0 << endl;
-            return true;
-        }
-        //        cout << x - x0 << " " << y - y0 << endl;
-        return false;
-    }
-
-    static bool intersection_angle(double x, double y) {
-        double initial_x = Constants::R1 + Constants::R12 + Constants::R2;
-        double initial_y = 0.0;
-
-        double angle_current = std::atan2(y, x);
-        double angle_initial = std::atan2(initial_y, initial_x);
-
-        double angle_difference = std::abs(angle_current - angle_initial);
-        if (angle_difference > M_PI) angle_difference = 2 * M_PI - angle_difference;
-
-
-        double threshold_angle = 0.000085 * M_PI;
-
-        return angle_difference < threshold_angle;
-    }
-
     // нормализация
     static pair<double, double> normalize_vector(double x, double y) {
         double length = sqrt(x * x + y * y);
@@ -104,10 +80,33 @@ public:
         auto spytnik_norm = normalize_vector(x3, y3);
 
         double vector_product = planeta_norm.first * spytnik_norm.second - planeta_norm.second * spytnik_norm.first;
-        if (vector_product < 0.01 and x3 > x2) return vector<double>{x2, y2, x3, y3};
+        if (vector_product < 0.13 and x3 > x2) return vector<double>{x2, y2, x3, y3};
         else return vector<double>{};
     }
+
+    // проверка на пересечение
+    static bool intersection_angle(double x, double y) {
+        auto norm_current = normalize_vector(x, y);
+        if (norm_current.first >= 0.99 and !intersection) {
+            intersection = true;
+            return true;
+        } else if (norm_current.first < 0 and intersection) {
+            intersection = false;
+        }
+        return false;
+    }
+
+    // вычисление нач координат для второй задачи
+    static bool fast_crossing_check(double x, double y) {
+        auto norm_current = normalize_vector(x, y);
+        if (norm_current.first >= 0.98)
+            return true;
+        return false;
+    }
 };
+
+bool Physics::intersection = false;
+
 
 int main() {
     state_type y = {
@@ -119,7 +118,7 @@ int main() {
 
     double t = 0.0;
     double t_circle_end = 60. * 60 * 24 * 677;
-    double t_end = t_circle_end * 1050;
+    double t_end = t_circle_end * 1002;
     double h = 5000;
 
     runge_kutta_cash_karp54<state_type> stepper;
@@ -138,6 +137,7 @@ int main() {
     double t_curr = t;
     vector<double> point_collinear;
 
+    double y_min = 1e10;
     while (t_curr < t_end) {
         stepper.do_step(Physics::calculateForces, y, t, h);
 
@@ -178,13 +178,18 @@ int main() {
                 break;
         }
 
-        if (t_curr > t_circle_end * 500.185) {
+        if (Physics::fast_crossing_check(y[0], y[2]) and count > 500) {
             point_collinear = Physics::coordinates_on_line(y[0], y[2], y[4], y[6]);
             if (!point_collinear.empty()) {
-                for (auto point: point_collinear) {
-                    cout << fixed << setprecision(8) << point << ", ";
+                if (abs(y[6]) < y_min) {
+                    y_min = abs(y[6]);
+                    cout << endl << "Возможное решение на " << count - 1 << "шаге\n";
+                    for (auto value: y) {
+                        cout << fixed << setprecision(2) << value << " ";
+                    }
                 }
-                break;
+
+                // cout << endl << "Кол-во пересечений: " << count << endl;
             }
         }
 
@@ -197,7 +202,7 @@ int main() {
     }
     fout_main.close();
 
-    cout << "Кол-во пересечений: " << count << endl;
+    cout << "Кол-во пересечений: " << count - 1 << endl;
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_spytnik(

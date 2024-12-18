@@ -92,11 +92,11 @@ def part_drawe_bias():
     plt.show()
 
 def thousandth_branch_drawe():
-    spytnik = pd.read_csv('path_spytnik_3.csv', sep=' ')
-    planeta = pd.read_csv('path_planeta_3.csv',sep=' ')
+    spytnik = pd.read_csv('../res_task1/path_spytnik_3.csv', sep=' ')
+    planeta = pd.read_csv('../res_task1/path_planeta_3.csv',sep=' ')
     plt.plot(spytnik.x, spytnik.y, label='Фобос')
     plt.plot(planeta.x, planeta.y, label='Марс')
     plt.legend()
     plt.show()
 
-full_drawe()
+thousandth_branch_drawe()
