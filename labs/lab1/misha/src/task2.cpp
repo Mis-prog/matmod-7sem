@@ -85,15 +85,15 @@ public:
         f[3] = v3y; // спутник
 
         // Ускорения для ракеты
-        f[4] = -Constants::U * dm(t) / m(t) * vx / v +
-               Constants::G * (
+        f[4] = -(Constants::U * dm(t)* vx )/(v*m(t)) +
+                    Constants::G * (
                    -Constants::M1 * rx / std::pow(r, 3)
                    - Constants::M2 * (rx - r12x) / std::pow(r2, 3)
                    - Constants::M3 * (rx - r13x) / std::pow(r3, 3)
                );
 
-        f[5] = -Constants::U * dm(t) / m(t) * vy / v +
-               Constants::G * (
+        f[5] = - (Constants::U * dm(t)* vy) / (v*m(t)) +
+                Constants::G * (
                    -Constants::M1 * ry / std::pow(r, 3)
                    - Constants::M2 * (ry - r12y) / std::pow(r2, 3)
                    - Constants::M3 * (ry - r13y) / std::pow(r3, 3)
@@ -105,11 +105,6 @@ public:
 
         f[7] = -Constants::G * Constants::M1 * r13y / std::pow(r13, 3) -
                Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3);
-
-        // double force_sun_x = -Constants::M1 * rx / pow(r, 3);
-        // double force_planet_x = -Constants::M2 * (rx - r12x) / pow(r2, 3);
-        // double force_satellite_x = -Constants::M3 * (rx - r13x) / pow(r3, 3);
-        // cout << "Forces X: " << force_sun_x << " " << force_planet_x << " " << force_satellite_x << endl;
     }
 };
 
@@ -119,10 +114,11 @@ double Physics::r12y;
 
 int main() {
     double r12x0 = -50368219856.43, r12y0 = -219503615669.65,
+            v2x0=23688.42, v2y0=-5739.71,
             r13x0 = -50370393498.29, r13y0 = -219513089385.80,
-            v3x0 = 25513.15, v3y0 = 6666.22; // нач координаты планеты и спутника
-    Physics::mt = 10000;
-    double angle = 90. * M_PI / 180;
+            v3x0 = 25513.15, v3y0 = -6666.22; // нач координаты планеты и спутника
+    Physics::mt = 100000;
+    double angle = 180. * M_PI / 180;
 
     double rx0, ry0, vx0, vy0;
 
@@ -139,11 +135,14 @@ int main() {
     vx0 = -v0 * ry0 / r0;
     vy0 = v0 * rx0 / r0;
 
+    // vx0+=v2x0;
+    // vy0+=v2y0;
+
     rx0 += Physics::r12x;
     ry0 += Physics::r12y;
 
 
-    std::ofstream fout_main("../../../../../labs/lab1/misha/res_task2/full_trajectory.csv");
+    std::ofstream fout_main("../labs/lab1/misha/res_task2/full_trajectory.csv");
     fout_main << "x y x3 y3\n";
 
     state_type y = {
@@ -152,9 +151,9 @@ int main() {
     };
 
     double t = 0.0;
-    double t_circle_end = 60. * 60 * 20;
+    double t_circle_end = 60. * 60 * 24 * 800;
     double t_end = t_circle_end;
-    double h = 0.1;
+    double h = 1000;
 
     double t_curr = t;
     runge_kutta_dopri5<state_type> stepper;
