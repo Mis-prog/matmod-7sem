@@ -80,8 +80,17 @@ public:
         auto spytnik_norm = normalize_vector(x3, y3);
 
         double vector_product = planeta_norm.first * spytnik_norm.second - planeta_norm.second * spytnik_norm.first;
-        if (vector_product < 0.13 and x3 > x2) return vector<double>{x2, y2, x3, y3};
+        if (vector_product < 1e-7 and abs(x3) > abs(x2)) return vector<double>{x2, y2, x3, y3};
         else return vector<double>{};
+    }
+
+    static double coordinates_on_line_coef(double x2, double y2, double x3, double y3) {
+        auto planeta_norm = normalize_vector(x2, y2);
+        auto spytnik_norm = normalize_vector(x3, y3);
+
+        double planeta_coef = planeta_norm.second / spytnik_norm.first;
+        double spytnik_coef = spytnik_norm.second / spytnik_norm.first;
+        if (abs(planeta_coef - spytnik_coef) < 1e-5 and abs(x3) > abs(x2)) return abs(planeta_coef - spytnik_coef);
     }
 
     // проверка на пересечение
@@ -99,7 +108,7 @@ public:
     // вычисление нач координат для второй задачи
     static bool fast_crossing_check(double x, double y) {
         auto norm_current = normalize_vector(x, y);
-        if (norm_current.first >= 0.98)
+        if (norm_current.first >= 0.97)
             return true;
         return false;
     }
@@ -135,9 +144,9 @@ int main() {
     int curr_i = 0;
     int count = 0;
     double t_curr = t;
-    vector<double> point_collinear;
+    double point_collinear;
 
-    double y_min = 1e10;
+    double y_min = 100;
     while (t_curr < t_end) {
         stepper.do_step(Physics::calculateForces, y, t, h);
 
@@ -162,7 +171,7 @@ int main() {
 
                 break;
             case 500:
-                h = 500; // меняем шаг для уточнения нач данных для второй задачи
+                // h = 1000; // меняем шаг для уточнения нач данных для второй задачи
                 orbitsX_Spytnik[2].push_back(y[4]);
                 orbitsY_Spytnik[2].push_back(y[6]);
 
@@ -178,18 +187,15 @@ int main() {
                 break;
         }
 
-        if (Physics::fast_crossing_check(y[0], y[2]) and count > 500) {
-            point_collinear = Physics::coordinates_on_line(y[0], y[2], y[4], y[6]);
-            if (!point_collinear.empty()) {
-                if (abs(y[6]) < y_min) {
-                    y_min = abs(y[6]);
-                    cout << endl << "Возможное решение на " << count - 1 << "шаге\n";
-                    for (auto value: y) {
-                        cout << fixed << setprecision(2) << value << " ";
-                    }
+        if (count > 1000) {
+            point_collinear = Physics::coordinates_on_line_coef(y[0], y[2], y[4], y[6]);
+            if (point_collinear && point_collinear < y_min) {
+                y_min = point_collinear;
+                cout << endl << "Возможное решение на: " << count - 1 << " шаге" << " ,коэффицент: " << fixed <<
+                        setprecision(10) << point_collinear << endl;
+                for (auto value: y) {
+                    cout << fixed << setprecision(2) << value << " ";
                 }
-
-                // cout << endl << "Кол-во пересечений: " << count << endl;
             }
         }
 
