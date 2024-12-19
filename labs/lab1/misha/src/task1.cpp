@@ -90,7 +90,7 @@ public:
 
         double planeta_coef = planeta_norm.second / spytnik_norm.first;
         double spytnik_coef = spytnik_norm.second / spytnik_norm.first;
-        if (abs(planeta_coef - spytnik_coef) < 1e-5 and abs(x3) > abs(x2)) return abs(planeta_coef - spytnik_coef);
+        if (abs(planeta_coef - spytnik_coef) < 1e-8 and abs(x3) > abs(x2)) return abs(planeta_coef - spytnik_coef);
     }
 
     // проверка на пересечение
@@ -119,16 +119,16 @@ bool Physics::intersection = false;
 
 int main() {
     state_type y = {
-        Constants::R1 + Constants::R12 + Constants::R2, 0, 0,
-        Constants::U2, // планета (x,vx,y,vy)
-        Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3, 0, 0,
-        Constants::U3 + Constants::U2 // астероид (x,vx,y,vy)
+            Constants::R1 + Constants::R12 + Constants::R2, 0, 0,
+            Constants::U2, // планета (x,vx,y,vy)
+            Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3, 0, 0,
+            Constants::U3 + Constants::U2 // астероид (x,vx,y,vy)
     };
 
     double t = 0.0;
     double t_circle_end = 60. * 60 * 24 * 677;
-    double t_end = t_circle_end * 1002;
-    double h = 5000;
+    double t_end = t_circle_end * 1060;
+    double h = 10000;
 
     runge_kutta_cash_karp54<state_type> stepper;
 
@@ -144,9 +144,9 @@ int main() {
     int curr_i = 0;
     int count = 0;
     double t_curr = t;
-    double point_collinear;
 
-    double y_min = 100;
+    double delta, delta_max = 1000;
+    double point_collinear, y_min = 100;
     while (t_curr < t_end) {
         stepper.do_step(Physics::calculateForces, y, t, h);
 
@@ -179,6 +179,7 @@ int main() {
                 orbitsY_Planeta[2].push_back(y[2]);
                 break;
             case 1000:
+                h = 1000;
                 orbitsX_Spytnik[3].push_back(y[4]);
                 orbitsY_Spytnik[3].push_back(y[6]);
 
@@ -188,11 +189,14 @@ int main() {
         }
 
         if (count > 1000) {
+            delta = Physics::distance(y[0], y[2], y[4], y[6]);
             point_collinear = Physics::coordinates_on_line_coef(y[0], y[2], y[4], y[6]);
-            if (point_collinear && point_collinear < y_min) {
+            if (point_collinear) {
                 y_min = point_collinear;
+                delta_max = delta;
                 cout << endl << "Возможное решение на: " << count - 1 << " шаге" << " ,коэффицент: " << fixed <<
-                        setprecision(10) << point_collinear << endl;
+                     setprecision(10) << point_collinear << " ,расстояние между спутником и планетой: " << fixed
+                     << setprecision(2) << delta_max << endl;
                 for (auto value: y) {
                     cout << fixed << setprecision(2) << value << " ";
                 }
@@ -201,8 +205,8 @@ int main() {
 
 
         fout_main <<
-                y[0] << " " << y[2] << " " // координаты планеты
-                << y[4] << " " << y[6] << "\n"; // координаты астероида
+                  y[0] << " " << y[2] << " " // координаты планеты
+                  << y[4] << " " << y[6] << "\n"; // координаты астероида
         t_curr += h;
         curr_i++;
     }
@@ -212,7 +216,7 @@ int main() {
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_spytnik(
-            "../../../../../labs/lab1/misha/res_task1/path_spytnik_" + std::to_string(i) + ".csv");
+                "../../../../../labs/lab1/misha/res_task1/path_spytnik_" + std::to_string(i) + ".csv");
         fout_spytnik << "x y\n";
         for (int j = 0; j < orbitsX_Spytnik[i].size(); j++) {
             fout_spytnik << orbitsX_Spytnik[i][j] << " " << orbitsY_Spytnik[i][j] << std::endl;
@@ -222,7 +226,7 @@ int main() {
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_planeta(
-            "../../../../../labs/lab1/misha/res_task1/path_planeta_" + std::to_string(i) + ".csv");
+                "../../../../../labs/lab1/misha/res_task1/path_planeta_" + std::to_string(i) + ".csv");
         fout_planeta << "x y\n";
         for (int j = 0; j < orbitsX_Planeta[i].size(); j++) {
             fout_planeta << orbitsX_Planeta[i][j] << " " << orbitsY_Planeta[i][j] << std::endl;
