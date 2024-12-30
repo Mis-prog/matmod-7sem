@@ -3,7 +3,7 @@
 
 
 ```bash 
-cd `name` 
+cd name 
 mkdir result
 cd result
 mkdir task1 task2
