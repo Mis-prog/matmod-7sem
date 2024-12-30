@@ -1,11 +1,13 @@
 # Лабораторные работы по курсу математическое моделирование
 
 --------------------
-Сборка библиотеки 
+Сборка проекта 
 ---
+
 ```cygwin
 mkdir build 
 cd build
-cmake --build . -t lab1_task2
-./labs/lab1/misha/src/lab1_task2 
+cmake --build . -t `executable`
+./`executable` 
 ```
+`executable` цель сборки и запуска
