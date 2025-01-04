@@ -22,10 +22,10 @@ struct Constants {
     static constexpr double U2 = 30e3;       // начальная скорость планеты (м/с)
     static constexpr double U3 = 1e3;     // начальная скорость астероида (м/с)
 
-    static constexpr double T = 1200.0; // время работы двигателя (с)
-    static constexpr double H = 200e3; // высота орбиты (м)
-    static constexpr double M0 = 10.0; // масса полезной назрузки (кг)
-    static constexpr double U = 3040.0; // скорость истечения (м/c)
+    static constexpr double T = 2400.0; // время работы двигателя (с)
+    static constexpr double H = 300.0e3; // высота орбиты (м)
+    static constexpr double M0 = 120.0; // масса полезной назрузки (кг)
+    static constexpr double U = 3060.0; // скорость истечения (м/c)
     static constexpr double koef = 0.025;
 };
 
@@ -113,15 +113,18 @@ double Physics::r12x;
 double Physics::r12y;
 
 int main() {
-    double r12x0 = -50368219856.43, r12y0 = -219503615669.65,
-            v2x0=23688.42, v2y0=-5739.71,
-            r13x0 = -50370393498.29, r13y0 = -219513089385.80,
-            v3x0 = 25513.15, v3y0 = -6666.22; // нач координаты планеты и спутника
-    Physics::mt = 100000;
-    double angle = 180. * M_PI / 180;
+    double r12x0 = -63051822463.82, r12y0 = 141005424242.41,
+            v2x0=-26912.62, v2y0=-11515.37,
+            r13x0 = -63198811221.89, r13y0 =141334141912.81,
+            v3x0 = -27897.52, v3y0 = -11974.71; // нач координаты планеты и спутника
+
+    Physics::mt = 500;
+    double angle_input;
+    cout << "Введите общую массу и угол: \n";
+    cin >> Physics::mt >> angle_input;
+    double angle = angle_input * M_PI / 180;
 
     double rx0, ry0, vx0, vy0;
-
     // Расчет нач значений
     Physics::r12x = r12x0;
     Physics::r12y = r12y0;
@@ -135,28 +138,28 @@ int main() {
     vx0 = -v0 * ry0 / r0;
     vy0 = v0 * rx0 / r0;
 
-    // vx0+=v2x0;
-    // vy0+=v2y0;
+    vx0+=v2x0;
+    vy0+=v2y0;
 
     rx0 += Physics::r12x;
     ry0 += Physics::r12y;
 
 
-    std::ofstream fout_main("../labs/lab1/misha/res_task2/full_trajectory.csv");
+    std::ofstream fout_main("../labs/lab1/alia/result/task2/full_trajectory.csv");
     fout_main << "x y x3 y3\n";
 
     state_type y = {
-        rx0, ry0, r13x0, r13y0,
+        rx0, ry0, r3x, r3y,
         vx0, vy0, v3x0, v3y0
     };
 
     double t = 0.0;
-    double t_circle_end = 60. * 60 * 24 * 800;
+    double t_circle_end = 60. * 60 * 24 * 28;
     double t_end = t_circle_end;
-    double h = 0.001;
+    double h = 10;
 
     double t_curr = t;
-    runge_kutta_dopri5<state_type> stepper;
+    runge_kutta_cash_karp54<state_type> stepper;
 
     integrate_adaptive(stepper, Physics::calculateForces, y, t, t_end, h,
                        [&](const state_type &state, double t) {
