@@ -84,17 +84,20 @@ public:
     f[3] = v3y;
 
     // Ускорения для ракеты
-    f[4] = -(Constants::U * dm(t)* vx )/(v*m(t)) +
-           Constants::G * (
-               -Constants::M2 * rx / std::pow(r1, 3)  // сила от планеты
-               -Constants::M3 * (rx - r3x) / std::pow(r2, 3)  // сила от спутника
-           );
+    std::pair<double, double> f_rocket = {
+    -(Constants::U * Physics::dm(t) * vx) / (v * Physics::m(t)),
+    -(Constants::U * Physics::dm(t) * vy) / (v * Physics::m(t))
+    };
 
-    f[5] = -(Constants::U * dm(t)* vy )/(v*m(t)) +
-           Constants::G * (
-               -Constants::M2 * ry / std::pow(r1, 3)  // сила от планеты
-               -Constants::M3 * (ry - r3y) / std::pow(r2, 3)  // сила от спутника
-           );
+    std::pair<double, double> f_gravity = {
+        Constants::G * (-Constants::M2 * rx / std::pow(r1, 3) - Constants::M3 * (rx - r3x) / std::pow(r2, 3)),
+        Constants::G * (-Constants::M2 * ry / std::pow(r1, 3) - Constants::M3 * (ry - r3y) / std::pow(r2, 3))
+    };
+
+    // Ускорения для ракеты
+    f[4] = f_rocket.first + f_gravity.first;
+    f[5] = f_rocket.second + f_gravity.second;
+
 
     // Ускорения для спутника
     f[6] = -Constants::G * Constants::M2 * r3x / std::pow(r3, 3);  // сила от планеты
