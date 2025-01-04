@@ -123,11 +123,15 @@ int main() {
         Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3, 0, 0,
         Constants::U3 + Constants::U2 // астероид (x,vx,y,vy)
     };
+    
 
+    int count_cycle,step;
+    cout << "Введите кол-во пересечений и шаг: ";
+    cin >> count_cycle >> step ;
     double t = 0.0;
     double t_circle_end = 60. * 60 * 24 * 365;
-    double t_end = t_circle_end * 1;
-    double h = 5000;
+    double t_end = t_circle_end * count_cycle;
+    double h = step;
 
     runge_kutta_cash_karp54<state_type> stepper;
 
@@ -145,7 +149,9 @@ int main() {
     double t_curr = t;
     double point_collinear;
 
-    double y_min = 100;
+    double y_min=1e6;
+
+    // double y_min = 100;
     while (t_curr < t_end) {
         stepper.do_step(Physics::calculateForces, y, t, h);
 
@@ -186,17 +192,17 @@ int main() {
                 break;
         }
 
-        // if (count > 1000) {
-        //     point_collinear = Physics::coordinates_on_line_coef(y[0], y[2], y[4], y[6]);
-        //     if (point_collinear && point_collinear < y_min) {
-        //         y_min = point_collinear;
-        //         cout << endl << "Возможное решение на: " << count - 1 << " шаге" << " ,коэффицент: " << fixed <<
-        //                 setprecision(10) << point_collinear << endl;
-        //         for (auto value: y) {
-        //             cout << fixed << setprecision(2) << value << " ";
-        //         }
-        //     }
-        // }
+        if (count > 1000) {
+            point_collinear = Physics::coordinates_on_line_coef(y[0], y[2], y[4], y[6]);
+            if (point_collinear && point_collinear < y_min) {
+                y_min = point_collinear;
+                cout << endl << "Возможное решение на: " << count - 1 << " шаге" << " ,коэффицент: " << fixed <<
+                        setprecision(10) << point_collinear << endl;
+                for (auto value: y) {
+                    cout << fixed << setprecision(2) << value << " ";
+                }
+            }
+        }
 
 
         fout_main <<
@@ -207,7 +213,7 @@ int main() {
     }
     fout_main.close();
 
-    cout << "Кол-во пересечений: " << count - 1 << endl;
+    cout << endl << "Кол-во пересечений: " << count - 1 << endl;
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_spytnik(
