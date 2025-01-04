@@ -61,50 +61,44 @@ public:
 
     static void calculateForces(const state_type &y, state_type &f, double t) {
         // Координаты и скорости спутника и ракеты
-        double rx = y[0], ry = y[1], vx = y[4], vy = y[5]; // ракета
-        double r13x = y[2], r13y = y[3], v3x = y[6], v3y = y[7]; // cпутник
+    double rx = y[0], ry = y[1], vx = y[4], vy = y[5];  // ракета
+    double r3x = y[2], r3y = y[3], v3x = y[6], v3y = y[7];  // спутник
 
-        if (sqrt((rx - r13x) * (rx - r13x) + (ry - r13y) * (ry - r13y)) <= Constants::R3) {
-            throw std::runtime_error("Ракета попала в планету.");
-        }
-        // Расчёт расстояний
-        double r = std::sqrt(rx * rx + ry * ry); // расстояние от солнца до ракеты
-        double r2 = distance(rx, ry, r12x, r12y); // расстояние от ракеты до планеты
-        double r3 = distance(rx, ry, r13x, r13y); // расстояние от ракеты до спутника
-        double r13 = std::sqrt(r13x * r13x + r13y * r13y); // расстояние от спутника до солнца
-        double r23 = distance(r13x, r13y, r12x, r12y); // расстояние от спутника до планеты
+    // Проверка столкновения ракеты со спутником
+    if (sqrt((rx - r3x) * (rx - r3x) + (ry - r3y) * (ry - r3y)) <= Constants::R3) {
+        throw std::runtime_error("Ракета попала в спутник.");
+    }
 
-        // Расчет скорости
-        double v = std::sqrt(vx * vx + vy * vy); // скорость ракеты
+    // Расчёт расстояний
+    double r1 = std::sqrt(rx * rx + ry * ry);  // расстояние от ракеты до планеты
+    double r2 = distance(rx, ry, r3x, r3y);    // расстояние между ракетой и спутником
+    double r3 = std::sqrt(r3x * r3x + r3y * r3y);  // расстояние от спутника до планеты
 
+    // Расчет скорости ракеты
+    double v = std::sqrt(vx * vx + vy * vy);
 
-        // Скорости
-        f[0] = vx;
-        f[1] = vy; // ракета
-        f[2] = v3x;
-        f[3] = v3y; // спутник
+    // Скорости
+    f[0] = vx;
+    f[1] = vy;
+    f[2] = v3x;
+    f[3] = v3y;
 
-        // Ускорения для ракеты
-        f[4] = -(Constants::U * dm(t)* vx )/(v*m(t)) +
-                    Constants::G * (
-                   -Constants::M1 * rx / std::pow(r, 3)
-                   - Constants::M2 * (rx - r12x) / std::pow(r2, 3)
-                   - Constants::M3 * (rx - r13x) / std::pow(r3, 3)
-               );
+    // Ускорения для ракеты
+    f[4] = -(Constants::U * dm(t)* vx )/(v*m(t)) +
+           Constants::G * (
+               -Constants::M2 * rx / std::pow(r1, 3)  // сила от планеты
+               -Constants::M3 * (rx - r3x) / std::pow(r2, 3)  // сила от спутника
+           );
 
-        f[5] = - (Constants::U * dm(t)* vy) / (v*m(t)) +
-                Constants::G * (
-                   -Constants::M1 * ry / std::pow(r, 3)
-                   - Constants::M2 * (ry - r12y) / std::pow(r2, 3)
-                   - Constants::M3 * (ry - r13y) / std::pow(r3, 3)
-               );
+    f[5] = -(Constants::U * dm(t)* vy )/(v*m(t)) +
+           Constants::G * (
+               -Constants::M2 * ry / std::pow(r1, 3)  // сила от планеты
+               -Constants::M3 * (ry - r3y) / std::pow(r2, 3)  // сила от спутника
+           );
 
-        // Ускорения для спутника
-        f[6] = -Constants::G * Constants::M1 * r13x / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13x - r12x) / std::pow(r23, 3);
-
-        f[7] = -Constants::G * Constants::M1 * r13y / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3);
+    // Ускорения для спутника
+    f[6] = -Constants::G * Constants::M2 * r3x / std::pow(r3, 3);  // сила от планеты
+    f[7] = -Constants::G * Constants::M2 * r3y / std::pow(r3, 3);  // сила от планеты
     }
 };
 
@@ -117,62 +111,62 @@ int main() {
             v2x0=23688.42, v2y0=-5739.71,
             r13x0 = -50370393498.29, r13y0 = -219513089385.80,
             v3x0 = 25513.15, v3y0 = -6666.22; // нач координаты планеты и спутника
-    Physics::mt = 100000;
-    double angle = 180. * M_PI / 180;
 
-    double rx0, ry0, vx0, vy0;
+    double angle_input;
+    cout << "Введите общую массу и угол: \n";
+    cin >> Physics::mt >> angle_input;
+    double angle = angle_input * M_PI / 180;
 
-    // Расчет нач значений
-    Physics::r12x = r12x0;
-    Physics::r12y = r12y0;
-    double r3x = r13x0 - Physics::r12x, r3y = r13y0 - Physics::r12y; // координаты ракеты относительно планеты
-    double r3 = std::sqrt(r3x * r3x + r3y * r3y); // расстояние между планетой и центром
+    // Переводим спутник в относительные координаты
+    double r3x = r13x0 - r12x0;
+    double r3y = r13y0 - r12y0;
+    double v3x = v3x0 - v2x0;
+    double v3y = v3y0 - v2y0;
 
-    double v0 = 1.0 * std::sqrt(Constants::G * Constants::M2 / (Constants::R2 + Constants::H));
-    rx0 = (Constants::R2 + Constants::H) * (r3x * cos(angle) - r3y * sin(angle)) / r3;
-    ry0 = (Constants::R2 + Constants::H) * (r3x * sin(angle) + r3y * cos(angle)) / r3;
+    // Расстояние до спутника
+    double r3 = std::sqrt(r3x * r3x + r3y * r3y);
+
+    // Рассчитываем начальное положение ракеты
+    double v0 = std::sqrt(Constants::G * Constants::M2 / (Constants::R2 + Constants::H));
+    double rx0 = (Constants::R2 + Constants::H) * (r3x * cos(angle) - r3y * sin(angle)) / r3;
+    double ry0 = (Constants::R2 + Constants::H) * (r3x * sin(angle) + r3y * cos(angle)) / r3;
+    
+    // Расстояние от ракеты до центра
     double r0 = sqrt(rx0 * rx0 + ry0 * ry0);
-    vx0 = -v0 * ry0 / r0;
-    vy0 = v0 * rx0 / r0;
+    
+    // Начальная скорость ракеты (перпендикулярная радиус-вектору)
+    double vx0 = -v0 * ry0 / r0;
+    double vy0 = v0 * rx0 / r0;
 
-    // vx0+=v2x0;
-    // vy0+=v2y0;
-
-    rx0 += Physics::r12x;
-    ry0 += Physics::r12y;
+    // Планета в центре координат
+    Physics::r12x = 0;
+    Physics::r12y = 0;
 
 
-    std::ofstream fout_main("../labs/lab1/misha/res_task2/full_trajectory.csv");
+
+    std::ofstream fout_main("../labs/lab1/misha/result/task2/full_trajectory.csv");
     fout_main << "x y x3 y3\n";
 
-    state_type y = {
-        rx0, ry0, r13x0, r13y0,
-        vx0, vy0, v3x0, v3y0
+     state_type y = {
+        rx0, ry0,  // координаты ракеты
+        r3x, r3y,  // координаты спутника
+        vx0, vy0,  // скорость ракеты
+        v3x, v3y   // скорость спутника
     };
 
     double t = 0.0;
-    double t_circle_end = 60. * 60 * 24 * 800;
+    double t_circle_end = 60. * 60 * 10;
     double t_end = t_circle_end;
-    double h = 1000;
+    double h = 0.1;
 
     double t_curr = t;
-    runge_kutta_dopri5<state_type> stepper;
+    runge_kutta_cash_karp54<state_type> stepper;
 
     integrate_adaptive(stepper, Physics::calculateForces, y, t, t_end, h,
                        [&](const state_type &state, double t) {
                            fout_main << y[0] << " " << y[1] << " " << y[2] << " " << y[3] << endl;
                        });
     fout_main.close();
-    // try {
-    //     while (t_curr < t_end) {
-    //         stepper.do_step(Physics::calculateForces, y, t, h);
-    //
-    //         t_curr += h;
-    //     }
-    //     fout_main.close();
-    // } catch (exception &e) {
-    //     std::cerr << e.what() << std::endl;
-    // }
 
     return 0;
 }
