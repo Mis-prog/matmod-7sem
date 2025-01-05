@@ -23,7 +23,7 @@ struct Constants {
     static constexpr double U3 = 1e3;     // начальная скорость астероида (м/с)
 
     static constexpr double T = 2400.0; // время работы двигателя (с)
-    static constexpr double H = 300.0e3; // высота орбиты (м)
+    static constexpr double H = 300e3; // высота орбиты (м)
     static constexpr double M0 = 120.0; // масса полезной назрузки (кг)
     static constexpr double U = 3060.0; // скорость истечения (м/c)
     static constexpr double koef = 0.025;
@@ -92,20 +92,26 @@ public:
     };
 
     std::pair<double, double> f_gravity = {
-         Constants::G * (-Constants::M1 * rx / std::pow(r, 3)- Constants::M2 * (rx - r12x) / std::pow(r2, 3)- Constants::M3 * (rx - r13x) / std::pow(r3, 3)),
-        Constants::G * (-Constants::M1 * ry / std::pow(r, 3)- Constants::M2 * (ry - r12y) / std::pow(r2, 3)- Constants::M3 * (ry - r13y) / std::pow(r3, 3))
+         Constants::G * (
+            // -Constants::M1 * rx / std::pow(r, 3)
+         - Constants::M2 * (rx - r12x) / std::pow(r2, 3)- Constants::M3 * (rx - r13x) / std::pow(r3, 3)),
+        Constants::G * (
+            // -Constants::M1 * ry / std::pow(r, 3)
+        - Constants::M2 * (ry - r12y) / std::pow(r2, 3)- Constants::M3 * (ry - r13y) / std::pow(r3, 3))
     };
 
     // Ускорения для ракеты
-    f[4] = f_rocket.first + f_gravity.first;
-    f[5] = f_rocket.second + f_gravity.second;
+    f[4] = f_gravity.first+f_rocket.first;
+    f[5] = f_gravity.second+f_rocket.second;
 
 
     // Ускорения для спутника
-    f[6] = -Constants::G * Constants::M1 * r13x / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13x - r12x) / std::pow(r23, 3);  // сила от планеты и солнца
-    f[7] = -Constants::G * Constants::M1 * r13y / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3);  // сила от планеты и солнца
+    f[6] =
+        //  -Constants::G * Constants::M1 * r13x / std::pow(r13, 3) 
+         -  Constants::G * Constants::M2 * (r13x - r12x) / std::pow(r23, 3);  // сила от планеты и солнца
+    f[7] =
+            //  -Constants::G * Constants::M1 * r13y / std::pow(r13, 3) 
+             -Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3);  // сила от планеты и солнца
     }
 };
 
@@ -114,10 +120,10 @@ double Physics::r12x;
 double Physics::r12y;
 
 int main() {
-    double r12x0 = 149217507646.81, r12y0 = 21293061887.29,
-            v2x0= -4165.04, v2y0= 29703.33,
-            r13x0 = 149575448805.21, r13y0 = 21344138705.56,
-            v3x0 =  -4296.27, v3y0 = 30778.16; // нач координаты планеты и спутника
+    double r12x0 = -63051822463.82, r12y0 =141005424242.41,
+            v2x0= -26912.62, v2y0= -11515.37,
+            r13x0 = -63198811221.89, r13y0 = 141334141912.81,
+            v3x0 =  -27897.52, v3y0 = -11974.71; // нач координаты планеты и спутника
 
     double angle_input;
     cout << "Введите общую массу и угол: \n";
@@ -162,9 +168,9 @@ int main() {
     };
 
     double t = 0.0;
-    double t_circle_end = 60. * 60 * 24*28;
+    double t_circle_end = 60. * 60 * 24 * 28;
     double t_end = t_circle_end;
-    double h = 10;
+    double h = 5;
 
     double t_curr = t;
     runge_kutta_cash_karp54<state_type> stepper;
