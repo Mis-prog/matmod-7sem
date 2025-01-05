@@ -65,9 +65,9 @@ public:
     double r13x = y[2], r13y = y[3], v3x = y[6], v3y = y[7];  // спутник
 
     // Проверка столкновения ракеты со спутником
-    // if (sqrt((rx - r3x) * (rx - r3x) + (ry - r3y) * (ry - r3y)) <= Constants::R3) {
-    //     throw std::runtime_error("Ракета попала в спутник.");
-// }
+    if (sqrt((rx - r13x) * (rx - r13x) + (ry - r13y) * (ry - r13y)) <= Constants::R3) {
+        throw std::runtime_error("Ракета попала в спутник.");
+    }
 
     // Расчёт расстояний
     double r = std::sqrt(rx * rx + ry * ry); // расстояние от солнца до ракеты
