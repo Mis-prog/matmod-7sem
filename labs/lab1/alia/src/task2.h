@@ -125,6 +125,7 @@ int init(double mt,double angle,bool output=false){
             v3x0 =  -27897.52, v3y0 = -11974.71; // нач координаты планеты и спутника
 
     double _angle = angle * M_PI / 180;
+    Physics::mt=mt;
 
     double v3x = v3x0 - v2x0;
     double v3y = v3y0 - v2y0;
@@ -180,7 +181,6 @@ int init(double mt,double angle,bool output=false){
         // Проверка на столкновение ракеты и планеты
         double r_rocket_planet = std::sqrt(y[0] * y[0] + y[1] * y[1]);
         if (r_rocket_planet <= Constants::R2) {
-            // std::cout << "Столкновение ракеты с планетой на времени t = " << t << " секунд." << std::endl;
             status = 2;
             break;
         }
@@ -190,12 +190,12 @@ int init(double mt,double angle,bool output=false){
         double dy_rocket_sat = y[1] - y[3];
         double r_rocket_sat = std::sqrt(dx_rocket_sat * dx_rocket_sat + dy_rocket_sat * dy_rocket_sat);
         if (r_rocket_sat <= Constants::R3) {
-            // std::cout << "Столкновение ракеты со спутником на времени t = " << t << " секунд." << std::endl;
             status = 1;
             break;
         }
         t+=h;
     }
+    
     if (output) {
         fout_main.close();
     }
