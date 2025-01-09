@@ -10,17 +10,17 @@ using state_type = std::array<double, 8>;
 using namespace std;
 
 struct Constants {
-    static constexpr double G = 6.67e-11;    // гравитационная постоянная
-    static constexpr double M1 = 2.0e30;     // масса звезды (кг)
-    static constexpr double M2 = 6.0e24;     // масса планеты (кг)
-    static constexpr double M3 = 7.3e22;     // масса астероида (кг)
-    static constexpr double R1 = 696340e3;   // радиус звезды (м)
-    static constexpr double R2 = 6378e3;     // радиус планеты (м)
-    static constexpr double R3 = 1737e3;     // радиус астероида (м)
-    static constexpr double R12 = 150e9;     // начальное расстояние звезда-планета (м)
-    static constexpr double R23 = 384e6;     // начальное расстояние планета-астероид (м)
-    static constexpr double U2 = 30e3;       // начальная скорость планеты (м/с)
-    static constexpr double U3 = 1e3;     // начальная скорость астероида (м/с)
+    static constexpr double G = 6.67e-11; // гравитационная постоянная
+    static constexpr double M1 = 2.0e30; // масса звезды (кг)
+    static constexpr double M2 = 6.0e24; // масса планеты (кг)
+    static constexpr double M3 = 7.3e22; // масса астероида (кг)
+    static constexpr double R1 = 696340e3; // радиус звезды (м)
+    static constexpr double R2 = 6378e3; // радиус планеты (м)
+    static constexpr double R3 = 1737e3; // радиус астероида (м)
+    static constexpr double R12 = 150e9; // начальное расстояние звезда-планета (м)
+    static constexpr double R23 = 384e6; // начальное расстояние планета-астероид (м)
+    static constexpr double U2 = 30e3; // начальная скорость планеты (м/с)
+    static constexpr double U3 = 1e3; // начальная скорость астероида (м/с)
 };
 
 // Вспомогательные функции
@@ -123,11 +123,11 @@ int main() {
         Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3, 0, 0,
         Constants::U3 + Constants::U2 // астероид (x,vx,y,vy)
     };
-    
 
-    int count_cycle,step;
+
+    int count_cycle, step;
     cout << "Введите кол-во пересечений и шаг: ";
-    cin >> count_cycle >> step ;
+    cin >> count_cycle >> step;
     double t = 0.0;
     double t_circle_end = 60. * 60 * 24 * 365;
     double t_end = t_circle_end * count_cycle;
@@ -149,7 +149,7 @@ int main() {
     double t_curr = t;
     double point_collinear;
 
-    double y_min=1e6;
+    double y_min = 1e6;
 
     // double y_min = 100;
     while (t_curr < t_end) {
