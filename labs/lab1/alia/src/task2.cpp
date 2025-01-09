@@ -12,7 +12,7 @@ int main() {
     // double angle,mt;
     // cout << "Введите угол и массу топлива: \n";  
     // cin >> angle >> mt;
-    init(286,120,true);
+    init(280.4,120,true);
 
     // double mt = findMinFuel(45);
     // cout << "Итоговое кол-во топливо: " << mt;
