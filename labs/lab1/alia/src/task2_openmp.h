@@ -15,20 +15,12 @@ double findMinFuel(double angle, double epsilon = 0.05) {
 
     double success = 0;
 
-    while (right - left > epsilon) {
-        double mid = (left + right) / 2.0;
-        int result = init(mid, angle, true);
-
-        if (result == 1) {
-            success = mid;
-            right = mid;
-        } else if (result == 3) {
-            right = mid;
-        } else if (result == 0) {
-            left = mid;
-        }
+    double mt=left;
+    while (success!=1){
+        success = init(mt,angle,false);
+        mt+=0.5;
     }
-    cout << "Оптимальное количество топлива: " << right << " для угла: " << angle << endl;
+    cout << "Оптимальное количество топлива: " << mt << " для угла: " << angle << endl;
     return success;
 }
 
