@@ -143,7 +143,7 @@ def show_animation(satel, r13x0, r13y0, tau):
 
 
 def NelderMid():
-    a1 = random.random() * math.pi * 2
+    a1 = random.random() * math.pi  * 2
     mt1 = random.randint(1, 20000)
     tau = 0.1
     a2 = random.random() * math.pi * 2
