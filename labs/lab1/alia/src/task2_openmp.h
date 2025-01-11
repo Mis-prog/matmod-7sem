@@ -10,7 +10,7 @@ struct Result {
 
 
 double findMinFuel(double angle, double epsilon = 0.05) {
-    double left = 265;
+    double left = 269;
     double right = 290;
 
     double success = 0;
@@ -23,6 +23,9 @@ double findMinFuel(double angle, double epsilon = 0.05) {
             break;
         }
         mt += 0.2;
+    }
+    if (mt > right) {
+        return -1;
     }
     return mt;
 }
@@ -39,6 +42,9 @@ void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double
         double angle = start_angle + i * angle_step;
         double min_fuel = findMinFuel(angle);
 
+        if (min_fuel == -1) {
+            continue; // Пропускаем неудачные расчеты
+        }
         results[i] = {angle, min_fuel};
 
 #pragma omp critical
