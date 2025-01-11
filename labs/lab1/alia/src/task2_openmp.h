@@ -10,18 +10,21 @@ struct Result {
 
 
 double findMinFuel(double angle, double epsilon = 0.05) {
-    double left = 275;
+    double left = 265;
     double right = 290;
 
     double success = 0;
 
-    double mt=left;
-    while (success!=1){
-        success = init(mt,angle,false);
-        mt+=0.5;
+    double mt = left;
+    while (true) {
+        success = init(mt, angle, false);
+        if (success == 1 && mt < right) {
+            // cout << "Оптимальное количество топлива: " << mt << " для угла: " << angle << endl;
+            break;
+        }
+        mt += 0.2;
     }
-    cout << "Оптимальное количество топлива: " << mt << " для угла: " << angle << endl;
-    return success;
+    return mt;
 }
 
 void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double angle_step = 1.0) {
@@ -47,7 +50,7 @@ void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double
     }
 
     // Сохраняем результаты в файл
-    std::ofstream output("../labs/lab1/alia/result/min_fuel_results.csv");
+    std::ofstream output("../labs/lab1/alia/result/t/min_fuel_results.csv");
     output << "angle,min_fuel\n";
 
     for (const auto &result: results) {
