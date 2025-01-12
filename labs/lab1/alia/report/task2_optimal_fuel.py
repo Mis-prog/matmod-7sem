@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('../result/task2/full_optimal_fuel.txt', sep='|', header=None)
+data = pd.read_csv('fuel_optimal_accuracity.txt', sep='|', header=None)
 data[1] = data[1].str.replace(r'.*\s(\d+\.\d+)', r'\1', regex=True)
 data[1] = data[1].str.replace('°', '', regex=False)
 data[1] = pd.to_numeric(data[1])
