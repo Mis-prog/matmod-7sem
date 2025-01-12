@@ -1,15 +1,15 @@
 #include "task2_openmp.h"
 
 int main() {
-    // init(2,270,true);
+    // init(3.33, 180, true);
 
-    // findMinFuel(0);
+    // findMinFuel(180);
 
-    double start_time = omp_get_wtime();
+    // double start_time = omp_get_wtime();
 
-    analyzeAllAngles(0,360 , 2.0);
+    analyzeAllAngles(270, 360, 3.0);
 
-    double end_time = omp_get_wtime();
-    std::cout << "Общее время выполнения: " << (end_time - start_time) << " секунд" << std::endl;
+    // double end_time = omp_get_wtime();
+    // std::cout << "Общее время выполнения: " << (end_time - start_time) << " секунд" << std::endl;
     return 0;
 }

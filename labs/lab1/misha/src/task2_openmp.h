@@ -11,7 +11,7 @@ struct Result {
 
 double findMinFuel(double angle, double epsilon = 0.05) {
     double left = 2;
-    double right = 7;
+    double right = 6;
 
     double success = 0;
 
@@ -24,10 +24,11 @@ double findMinFuel(double angle, double epsilon = 0.05) {
         }
         // cout << mt << endl;
         mt += 0.01;
+        if (mt > right) {
+            return -1;
+        }
     }
-    if (mt > right) {
-        return -1;
-    }
+
     return mt;
 }
 
@@ -44,6 +45,7 @@ void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double
         double min_fuel = findMinFuel(angle);
 
         if (min_fuel == -1) {
+            cout << "Вычисления лля угла" << angle << " провалились" << std::endl;
             continue; // Пропускаем неудачные расчеты
         }
         results[i] = {angle, min_fuel};
@@ -57,7 +59,7 @@ void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double
     }
 
     // Сохраняем результаты в файл
-    std::ofstream output("../labs/lab1/misha/result/t/min_fuel_results.csv");
+    std::ofstream output("../labs/lab1/misha/result/task2/min_fuel_results.csv");
     output << "angle,min_fuel\n";
 
     for (const auto &result: results) {
