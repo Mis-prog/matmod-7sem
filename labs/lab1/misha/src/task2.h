@@ -92,10 +92,14 @@ public:
         };
 
         std::pair<double, double> f_gravity = {
-            Constants::G * (-Constants::M1 * rx / std::pow(r, 3) - Constants::M2 * (rx - r12x) / std::pow(r2, 3) -
-                            Constants::M3 * (rx - r13x) / std::pow(r3, 3)),
-            Constants::G * (-Constants::M1 * ry / std::pow(r, 3) - Constants::M2 * (ry - r12y) / std::pow(r2, 3) -
-                            Constants::M3 * (ry - r13y) / std::pow(r3, 3))
+            Constants::G * (
+                // - Constants::M1 * rx / std::pow(r, 3)
+                - Constants::M2 * (rx - r12x) / std::pow(r2, 3)
+                - Constants::M3 * (rx - r13x) / std::pow(r3, 3)),
+            Constants::G * (
+                // - Constants::M1 * ry / std::pow(r, 3)
+                - Constants::M2 * (ry - r12y) / std::pow(r2, 3)
+                - Constants::M3 * (ry - r13y) / std::pow(r3, 3))
         };
 
         // Ускорения для ракеты
@@ -104,10 +108,12 @@ public:
 
 
         // Ускорения для спутника
-        f[6] = -Constants::G * Constants::M1 * r13x / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13x - r12x) / std::pow(r23, 3); // сила от планеты и солнца
-        f[7] = -Constants::G * Constants::M1 * r13y / std::pow(r13, 3) -
-               Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3); // сила от планеты и солнца
+        f[6] =
+                // -Constants::G * Constants::M1 * r13x / std::pow(r13, 3)
+                -Constants::G * Constants::M2 * (r13x - r12x) / std::pow(r23, 3); // сила от планеты и солнца
+        f[7] =
+                // -Constants::G * Constants::M1 * r13y / std::pow(r13, 3)
+                -Constants::G * Constants::M2 * (r13y - r12y) / std::pow(r23, 3); // сила от планеты и солнца
     }
 };
 
@@ -137,10 +143,8 @@ int init(double mt, double angle, bool output = false) {
             r13x0 = -50370393498.29, r13y0 = -219513089385.80,
             v3x0 = 25513.15, v3y0 = -6666.22; // нач координаты планеты и спутника
 
-    double angle_input;
-    cout << "Введите общую массу и угол: \n";
-    cin >> Physics::mt >> angle_input;
-    double angle = angle_input * M_PI / 180;
+    double _angle = angle * M_PI / 180;
+    Physics::mt = mt;
 
     double v3x = v3x0 - v2x0;
     double v3y = v3y0 - v2y0;
@@ -155,8 +159,8 @@ int init(double mt, double angle, bool output = false) {
 
     // Рассчитываем начальное положение ракеты
     double v0 = std::sqrt(Constants::G * Constants::M2 / (Constants::R2 + Constants::H));
-    double rx0 = (Constants::R2 + Constants::H) * (r3x * cos(angle) - r3y * sin(angle)) / r3;
-    double ry0 = (Constants::R2 + Constants::H) * (r3x * sin(angle) + r3y * cos(angle)) / r3;
+    double rx0 = (Constants::R2 + Constants::H) * (r3x * cos(_angle) - r3y * sin(_angle)) / r3;
+    double ry0 = (Constants::R2 + Constants::H) * (r3x * sin(_angle) + r3y * cos(_angle)) / r3;
 
     // Расстояние от ракеты до центра
     double r0 = sqrt(rx0 * rx0 + ry0 * ry0);
@@ -168,10 +172,6 @@ int init(double mt, double angle, bool output = false) {
     rx0 += r12x0;
     ry0 += r12y0;
 
-
-    std::ofstream fout_main("../labs/lab1/misha/result/task2/full_trajectory.csv");
-    fout_main << "x y x3 y3\n";
-
     state_type y = {
         rx0, ry0, // координаты ракеты
         r13x0, r13y0, // координаты спутника
@@ -180,12 +180,12 @@ int init(double mt, double angle, bool output = false) {
     };
 
     double t = 0.0;
-    double t_circle_end = 60. * 60 * 10;
+    double t_circle_end = 60. * 60 * 8 * 3;
     double t_end = t_circle_end;
     double h = 0.1;
 
     double t_curr = t;
-    runge_kutta_cash_karp54<state_type> stepper;
+    runge_kutta_dopri5<state_type> stepper;
 
     int status = 0; //0 - нет столкновения в пределах орбиты спутника,1 - cтолкновение со спутником
 
@@ -210,4 +210,6 @@ int init(double mt, double angle, bool output = false) {
     if (output) {
         fout_main.close();
     }
+
+    return status;
 }

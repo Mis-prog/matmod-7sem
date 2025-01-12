@@ -10,8 +10,8 @@ struct Result {
 
 
 double findMinFuel(double angle, double epsilon = 0.05) {
-    double left = 269;
-    double right = 290;
+    double left = 2;
+    double right = 7;
 
     double success = 0;
 
@@ -22,7 +22,8 @@ double findMinFuel(double angle, double epsilon = 0.05) {
             // cout << "Оптимальное количество топлива: " << mt << " для угла: " << angle << endl;
             break;
         }
-        mt += 0.2;
+        // cout << mt << endl;
+        mt += 0.01;
     }
     if (mt > right) {
         return -1;
