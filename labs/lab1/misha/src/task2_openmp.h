@@ -11,19 +11,19 @@ struct Result {
 
 double findMinFuel(double angle, double epsilon = 0.05) {
     double left = 2;
-    double right = 6;
+    double right = 5;
 
     double success = 0;
 
     double mt = left;
     while (true) {
         success = init(mt, angle, false);
-        if (success == 1 && mt < right) {
+        if (success == 1 && mt <= right) {
             // cout << "Оптимальное количество топлива: " << mt << " для угла: " << angle << endl;
             break;
         }
         // cout << mt << endl;
-        mt += 0.01;
+        mt += 0.025;
         if (mt > right) {
             return -1;
         }
@@ -44,10 +44,10 @@ void analyzeAllAngles(double start_angle = 0.0, double end_angle = 360.0, double
         double angle = start_angle + i * angle_step;
         double min_fuel = findMinFuel(angle);
 
-        if (min_fuel == -1) {
-            cout << "Вычисления лля угла" << angle << " провалились" << std::endl;
-            continue; // Пропускаем неудачные расчеты
-        }
+        // if (min_fuel == -1) {
+        //     // cout << "Вычисления для угла" << angle << " провалились" << std::endl;
+        //     continue; // Пропускаем неудачные расчеты
+        // }
         results[i] = {angle, min_fuel};
 
 #pragma omp critical

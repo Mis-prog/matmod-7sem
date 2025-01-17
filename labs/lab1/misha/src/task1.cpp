@@ -132,7 +132,7 @@ int main() {
 
     runge_kutta_cash_karp54<state_type> stepper;
 
-    std::ofstream fout_main("../../../../../labs/lab1/misha/res_task1/path_full.csv");
+    std::ofstream fout_main("../labs/lab1/misha/result/task1/path_full.csv");
     fout_main << "x2 y2 x3 y3\n";
 
     std::vector<std::vector<double> > orbitsX_Spytnik(4);
@@ -212,7 +212,7 @@ int main() {
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_spytnik(
-            "../../../../../labs/lab1/misha/res_task1/path_spytnik_" + std::to_string(i) + ".csv");
+            "../labs/lab1/misha/result/task1/path_spytnik_" + std::to_string(i) + ".csv");
         fout_spytnik << "x y\n";
         for (int j = 0; j < orbitsX_Spytnik[i].size(); j++) {
             fout_spytnik << orbitsX_Spytnik[i][j] << " " << orbitsY_Spytnik[i][j] << std::endl;
@@ -222,7 +222,7 @@ int main() {
 
     for (int i = 0; i < orbitsX_Spytnik.size(); i++) {
         std::ofstream fout_planeta(
-            "../../../../../labs/lab1/misha/res_task1/path_planeta_" + std::to_string(i) + ".csv");
+            "../labs/lab1/misha/result/task1/path_planeta_" + std::to_string(i) + ".csv");
         fout_planeta << "x y\n";
         for (int j = 0; j < orbitsX_Planeta[i].size(); j++) {
             fout_planeta << orbitsX_Planeta[i][j] << " " << orbitsY_Planeta[i][j] << std::endl;
