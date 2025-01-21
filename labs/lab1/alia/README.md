@@ -1,6 +1,6 @@
 3 вариант(Земля-Луна)
 --------------------
 
-Описание
+Решение 2 задачи
 ====================
-- 280 кг топливо при угле
+https://colab.research.google.com/drive/1BWW8IvQ1VnXT3ONHxq0OExN6kF4ovn7T?usp=sharing

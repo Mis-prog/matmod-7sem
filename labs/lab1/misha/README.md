@@ -1,6 +1,6 @@
 2 вариант(Марс-Фобос)
 --------------------
 
-Описание
+Решение 2 задание
 ====================
-- 4 кг масса топлива при угле 0
+https://colab.research.google.com/drive/1G-XvdRtWcAzamaBK6miYgzONnxpZTSKj?usp=sharing
