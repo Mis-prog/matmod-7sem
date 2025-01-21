@@ -83,7 +83,7 @@ void write_file(double a, double b,
 
 int main()
 {
-    double step = 0.1;
+    double step = 0.01;
     int n = 100000;
     double t0 = 0, t1 = t0 + n * step;
     std::cout << "Введите  a и b: " << std::endl;
