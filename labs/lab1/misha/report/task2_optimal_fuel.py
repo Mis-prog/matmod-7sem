@@ -1,17 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('fuel_optimal_accuracity.txt', sep='|', header=None)
+data = pd.read_csv('fuel_optimal.txt', sep='|', header=None)
 data[1] = data[1].str.replace(r'.*\s(\d+\.\d+)', r'\1', regex=True)
 data[1] = data[1].str.replace('°', '', regex=False)
 data[1] = pd.to_numeric(data[1])
 
-data[2] = data[2].str.replace(r'.*\s(\d+\.\d+)', r'\1', regex=True)
+data[2] = data[2].str.extract(r'Минимальное топливо:\s*(-?\d+\.\d+)')[0]
 data[2] = pd.to_numeric(data[2])
 
 data_sorted = data.sort_values(by=1)
-
-min_fuel_index = data[2].idxmin()
+print(data_sorted)
+data_filter=data[(data[2]>0)]
+min_fuel_index = data_filter[2].idxmin()
 min_fuel_row = data.iloc[min_fuel_index]
 
 plt.title('Зависимость топлива и угла')
