@@ -4,13 +4,14 @@
 #include <iomanip>
 #include <fstream>
 #include <time.h>
+#include <math.h>
 
 double f(double t, double x, double y, double z, double a, double b) {
-    return a * (y – x);
+    return a * (y - x);
 }
 
 double g(double t, double x, double y, double z, double a, double b) {
-    return b * x + y – x * z;
+    return b * x + y - x * z;
 }
 
 double h(double t, double x, double y, double z, double a, double b) {
@@ -54,8 +55,9 @@ void write_file(double a, double b,
                 std::vector<double> y, 
                 std::vector<double> z)
 {
-    std::ofstream fout;
+    std::ofstream fout, fout_stat;
     fout.open("../labs/lab4/alia/result/result.txt");
+    fout_stat.open("../labs/lab4/alia/result/stat_points.txt");
 
     if (t.size() != x.size() || t.size() != y.size() || t.size() != z.size()) {
         std::cout << "Dimension t is not equal with other dimensions" << std::endl;
@@ -63,7 +65,12 @@ void write_file(double a, double b,
         throw "dimensions error";
     }
 
-    fout << a << " " << b << "\n";
+    fout_stat << a << " " << b << std::endl;
+    fout_stat << sqrt(8/3 * ( b + 1)) << " " << sqrt(8/3 * (b + 1)) << " " << b + 1 << std::endl;
+    fout_stat << -sqrt(8/3 * (b + 1)) << " " << -sqrt(8/3 * (b + 1)) << " " << b + 1<< std::endl;
+    fout_stat << 0 << " " << 0 << " " << 0 << std::endl;
+    fout_stat.close();
+
     for (int i = 0; i < x.size(); i++) 
     {
         fout << t[i] << " " << x[i] << " " << y[i] << " " << z[i] << "\n";
@@ -78,6 +85,8 @@ int main()
     int n = 10000;
     double t0 = 0, t1 = t0 + n * step;
     double a = 1, b = 10; //
+    std::cout << "Введите  a и b: " << std::endl;
+    std::cin >> a >> b; 
     double x0 = 1, y0 = 1, z0 = 1;
 
     std::vector<double> t(n), x(n), y(n), z(n);
