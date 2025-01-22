@@ -2,7 +2,7 @@ import pandas as pd
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('../result/task2/trajectory_mt-2.05263_angle-1.csv', sep=' ')[::200]
+data = pd.read_csv('../result/task2/trajectory_mt-2.05263_angle-2.csv', sep=' ')[::200]
 
 fig, ax = plt.subplots(figsize=(6, 4))
 ax.set_xlim(-50368219856.43 - 2e7, -50368219856.43 + 2e7)
@@ -17,7 +17,9 @@ def init():
     
     line_satellite.set_data([], [])
     point_satellite.set_data([], [])
-    return line_satellite, point_satellite
+    line_rocket.set_data([], [])
+    point_rocket.set_data([], [])
+    return line_satellite, point_satellite,line_rocket, point_rocket
 
 
 def update(frame):
@@ -28,12 +30,12 @@ def update(frame):
     line_satellite.set_data(x_data_satellite, y_data_satellite)
 
     # Обновление данных для ракеты
-    # x_data_rocket = data.x[:frame]
-    # y_data_rocket = data.y[:frame]
-    # point_rocket.set_data([data.x.iloc[frame]], [data.y.iloc[frame]])
-    # line_rocket.set_data(x_data_rocket, y_data_rocket)
+    x_data_rocket = data.x[:frame]
+    y_data_rocket = data.y[:frame]
+    point_rocket.set_data([data.x.iloc[frame]], [data.y.iloc[frame]])
+    line_rocket.set_data(x_data_rocket, y_data_rocket)
 
-    return line_satellite,  point_satellite
+    return line_satellite,  point_satellite,line_rocket ,line_satellite
 
 
 # Создание анимации
