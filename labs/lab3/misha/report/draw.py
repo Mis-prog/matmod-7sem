@@ -30,5 +30,4 @@ anim = FuncAnimation(fig, animate,
 
 title = f'soliton a = {0.7} b = {b}.gif'
 
-
 plt.show()
