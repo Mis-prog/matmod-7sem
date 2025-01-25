@@ -43,13 +43,9 @@
 Авторы
 -------
 <p align="center">
-  <!-- Первый контрибьютор -->
-  <a href="https://t.me/graf_de_len" target="_blank">
-    <img src="https://t.me/i/userpic/320/graf_de_len.jpg" width="100" style="border-radius: 50%; width: 100px;" alt="User 1" />
-  </a>
-  <!-- Второй контрибьютор -->
-  <a href="https://t.me/alia_gz" target="_blank">
-    <img src="https://t.me/i/userpic/320/alia_gz.jpg" width="100" style="border-radius: 50%; width: 100px;" alt="User 2" />
-  </a>
+  <img src="https://contrib.rocks/image?repo=Mis-prog/matmod" />
 </p>
+
+
+
 
