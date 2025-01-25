@@ -1,18 +1,34 @@
-# Лабораторные работы по курсу математическое моделирование
+# Лабораторные работы по курсу "Математическое моделирование"
 
---------------------
-Сборка проекта 
 ---
 
-```cygwin
-mkdir build 
-cd build
-cmake --build . -t executable
-./executable 
-```
-`executable` цель сборки и запуска
+## Сборка проекта
 
+Для сборки проекта выполните следующие шаги:
 
+1. Создайте директорию для сборки:
+    ```bash
+    mkdir build
+    ```
+
+2. Перейдите в директорию сборки:
+    ```bash
+    cd build
+    ```
+
+3. Скомпилируйте проект:
+    ```bash
+    cmake --build . -t executable
+    ```
+
+4. Запустите исполняемый файл:
+    ```bash
+    ./executable
+    ```
+
+`executable` — цель сборки и запуска проекта.
+
+---
 
 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
   <div>
