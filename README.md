@@ -40,8 +40,8 @@
 
 Будущие котята, у вас все получится! 
 
+Авторы
 ---
-
 <p align="center">
   <a href="https://github.com/Mis-prog/matmod/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=Mis-prog/matmod" />
