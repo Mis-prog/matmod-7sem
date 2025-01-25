@@ -37,6 +37,9 @@
 - Для **ЛР3** — `lab3_alia/lab3_misha`
 - Для **ЛР4** — `lab4_alia/lab4_misha`
 
+
+Будущие котята, у вас все получится! 
+
 ---
 
 <p align="center">
