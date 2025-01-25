@@ -43,8 +43,12 @@
 Авторы
 -------
 <p align="center">
-  <img src="https://contrib.rocks/image?repo=Mis-prog/matmod" />
+  <a href="https://pp.userapi.com/c540104/v540104658/7fd5/T2lBYpthqSs.jpg">
+    <img src="https://contrib.rocks/image?repo=Mis-prog/matmod" />
+  </a>
 </p>
+
+<p align="center">Made with <a href="https://contrib.rocks">contrib.rocks</a>.</p>
 
 
 
