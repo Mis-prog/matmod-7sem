@@ -13,6 +13,7 @@ cmake --build . -t executable
 `executable` цель сборки и запуска
 
 
+
 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
   <div>
     <a href="https://github.com/Mis-prog/matmod/graphs/contributors">
