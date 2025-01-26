@@ -9,17 +9,28 @@
 #include <iostream>
 
 class Chart {
+private:
+    void Clear() {
+            CurrentStep = 0;
+
+            Offsets.resize(NumberOfParticles, 0.0);
+            Offsets[NumberOfParticles / 2 - 1] = -InitialDeviation;
+            Offsets[NumberOfParticles / 2] = InitialDeviation;
+
+            Speeds.resize(NumberOfParticles, 0.0);
+            Accelerations = CalcCommonAccelerations();
+        }
 protected:
     std::string Header;
     bool IsStarted = false;
-    double Alpha = 0.8;
-    double Beta = 0.0;
+    double Alpha = 0.0;
+    double Beta = 0.7;
     double Tau = 0.02;
     double Mass = 1;
-    int NumberOfSteps = 1'000'000;
+    int NumberOfSteps = 1'000'00;
     int CurrentStep = 0;
     int UpdateStep = 500;
-    int NumberOfParticles = 1000;
+    int NumberOfParticles = 500;
     double InitialDeviation = 0.5;
     double InitalHamiltonian = 0.0;
     double FiniteHamiltonian = 0.0;
@@ -35,31 +46,21 @@ public:
         Clear();
         fout.open("../labs/lab3/misha/result/" + header + ".txt");
     }
-    
-    virtual void Clear() {
-        CurrentStep = 0;
 
-        Offsets.resize(NumberOfParticles, 0.0);
-        Offsets[NumberOfParticles / 2 - 1] = -InitialDeviation;
-        Offsets[NumberOfParticles / 2] = InitialDeviation;
-
-        Speeds.resize(NumberOfParticles, 0.0);
-        Accelerations = CalcCommonAccelerations();
-
+    void SetAlphaBetta(double Alpha,double Beta){
+        this -> Alpha = Alpha;
+        this -> Beta = Beta;
         InitalHamiltonian = CalcHamiltonian();
-        std :: cout << "Начальный гамильтолиан для "<< header << " :"<< std::fixed << std::setprecision(5) << InitalHamiltonian  << std::endl;
+        std :: cout << "Начальный гамильтолиан для "<< Header << ": "<< std::fixed << std::setprecision(10) << InitalHamiltonian  << std::endl;
     }
 
     ~Chart() {
         fout.close();
-        std :: cout << "Конечный гамильтолиандля " << header << " :" << std::fixed << std::setprecision(5) << FiniteHamiltonian << std::endl;
+        std :: cout << "Конечный гамильтолиан для " << Header << ": " << std::fixed << std::setprecision(10) << FiniteHamiltonian << std::endl;
     }
 
 protected:
-    void SetAlphaBetta(double Alpha,double Beta){
-        this -> Alpha = Alpha;
-        this -> Beta = Beta;
-    }
+    
     void SaveResult(){
         for (auto value : Offsets ){
             fout << value << " "; 
