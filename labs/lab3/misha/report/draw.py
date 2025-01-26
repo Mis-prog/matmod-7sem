@@ -4,7 +4,7 @@ import numpy as np
 
 b = 0
 
-data = np.genfromtxt(f'../result/speed_{b}.000000', delimiter=' ')
+data = np.genfromtxt(f'../result/symplectic.txt', delimiter=' ')
 print(data)
 fig = plt.figure()
 my=max([max(dat) for dat in data])
@@ -28,6 +28,5 @@ def animate(i):
 anim = FuncAnimation(fig, animate,
                     frames=fr, interval=50, blit=True)
 
-title = f'soliton a = {0.7} b = {b}.gif'
 
 plt.show()
