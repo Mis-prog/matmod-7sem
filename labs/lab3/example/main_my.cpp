@@ -1,11 +1,11 @@
 #include "symplectic.h"
 #include "verle.h"
 
-int main(){
+int main() {
     Verle verleMethod;
-    double alpha,beta;
+    double alpha, beta;
     std::cout << "Введите альфа и бетта:\n";
-    std::cin >> alpha, beta; 
+    std::cin >> alpha, beta;
     verleMethod.SetAlphaBetta(alpha, beta);
     verleMethod.Calculate();
 

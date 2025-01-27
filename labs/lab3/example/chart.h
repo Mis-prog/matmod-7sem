@@ -14,8 +14,8 @@ private:
             CurrentStep = 0;
 
             Offsets.resize(NumberOfParticles, 0.0);
-            Offsets[NumberOfParticles / 2 - 1] = InitialDeviation;
-            Offsets[NumberOfParticles / 2] = -InitialDeviation;
+            Offsets[NumberOfParticles / 2 - 1] = - InitialDeviation;
+            Offsets[NumberOfParticles / 2] =  InitialDeviation;
 
             Speeds.resize(NumberOfParticles, 0.0);
             Accelerations = CalcCommonAccelerations();
@@ -25,13 +25,13 @@ protected:
     bool IsStarted = false;
     double Alpha = 0.0;
     double Beta = 0.7;
-    double Tau = 0.02;
-    double Mass = 1;
-    int NumberOfSteps = 1'000'00;
+    double Tau = 0.01;
+    double Mass = 0.5;
+    int NumberOfSteps = 1'000'000;
     int CurrentStep = 0;
-    int UpdateStep = 50;
+    int UpdateStep = 10;
     int NumberOfParticles = 500;
-    double InitialDeviation = 1;
+    double InitialDeviation = 0.5;
     double InitalHamiltonian = 0.0;
     double FiniteHamiltonian = 0.0;
 
