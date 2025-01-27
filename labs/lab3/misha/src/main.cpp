@@ -8,5 +8,6 @@ int main(){
     std::cin >> alpha, beta; 
     verleMethod.SetAlphaBetta(alpha, beta);
     verleMethod.Calculate();
+
     return 0;
 }

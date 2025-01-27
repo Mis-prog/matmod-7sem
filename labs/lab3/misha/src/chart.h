@@ -14,8 +14,8 @@ private:
             CurrentStep = 0;
 
             Offsets.resize(NumberOfParticles, 0.0);
-            Offsets[NumberOfParticles / 2 - 1] = -InitialDeviation;
-            Offsets[NumberOfParticles / 2] = InitialDeviation;
+            Offsets[NumberOfParticles / 2 - 1] = InitialDeviation;
+            Offsets[NumberOfParticles / 2] = -InitialDeviation;
 
             Speeds.resize(NumberOfParticles, 0.0);
             Accelerations = CalcCommonAccelerations();
@@ -29,9 +29,9 @@ protected:
     double Mass = 1;
     int NumberOfSteps = 1'000'00;
     int CurrentStep = 0;
-    int UpdateStep = 500;
+    int UpdateStep = 50;
     int NumberOfParticles = 500;
-    double InitialDeviation = 0.5;
+    double InitialDeviation = 1;
     double InitalHamiltonian = 0.0;
     double FiniteHamiltonian = 0.0;
 
@@ -51,12 +51,12 @@ public:
         this -> Alpha = Alpha;
         this -> Beta = Beta;
         InitalHamiltonian = CalcHamiltonian();
-        std :: cout << "Начальный гамильтолиан для "<< Header << ": "<< std::fixed << std::setprecision(10) << InitalHamiltonian  << std::endl;
+        std :: cout << "Начальный гамильтолиан для "<< Header << ": "<< std::fixed << std::setprecision(15) << InitalHamiltonian  << std::endl;
     }
 
     ~Chart() {
         fout.close();
-        std :: cout << "Конечный гамильтолиан для " << Header << ": " << std::fixed << std::setprecision(10) << FiniteHamiltonian << std::endl;
+        std :: cout << "Конечный гамильтолиан для " << Header << ": " << std::fixed << std::setprecision(15) << FiniteHamiltonian << std::endl;
     }
 
 protected:
