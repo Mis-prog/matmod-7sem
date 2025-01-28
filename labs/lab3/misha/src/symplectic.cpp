@@ -4,7 +4,10 @@ Symplectic::Symplectic() : Chart("symplectic") {}
 
 void Symplectic::start() {
     isStarted = true;
-    calculate();
+    initialHamiltonian = calcHamiltonian();
+    std::cout << "Начальный гамильтон\n";
+    std::cout << initialHamiltonian << std::endl;
+    this->calculate();
 }
 
 void Symplectic::calculate() {

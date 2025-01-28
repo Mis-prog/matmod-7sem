@@ -4,6 +4,9 @@ Speed::Speed() : Chart("speed") {}
 
 void Speed::start() {
     isStarted = true;
+    initialHamiltonian = calcHamiltonian();
+    std::cout << "Начальный гамильтон\n";
+    std::cout << initialHamiltonian << std::endl;
     this->calculate();
 }
 

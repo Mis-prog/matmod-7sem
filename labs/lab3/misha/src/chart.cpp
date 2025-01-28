@@ -1,7 +1,7 @@
 #include "../include/chart.h"
 
 Chart::Chart(const std::string &header) : header(header) {
-    out.open("../labs/lab3/example/result/" + header + ".txt");
+    out.open("../labs/lab3/misha/result/" + header + ".txt");
     clear();
 }
 
@@ -22,8 +22,7 @@ void Chart::clear() {
     accelerations = calcCommonAccelerations();
 
     initialHamiltonian = calcHamiltonian();
-    std::cout << "Начальный гамильтон\n";
-    std::cout << initialHamiltonian << std::endl;
+
     finiteHamiltonian = initialHamiltonian;
 
     callDataChanged();
@@ -89,4 +88,22 @@ void Chart::callDataChanged() {
         out << value << " ";
     }
     out << std::endl;
+}
+
+
+void Chart::setAlphaBeta(double alpha, double beta) {
+    this->alpha = alpha;
+    this->beta = beta;
+}
+
+Chart::~Chart() {
+    out.close();
+}
+
+void Chart::setnumberOfSteps(int numberOfSteps) {
+    this->numberOfSteps = numberOfSteps;
+}
+
+void Chart::setupdateStep(int updateStep) {
+    this->updateStep = updateStep;
 }

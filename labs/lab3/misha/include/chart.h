@@ -48,59 +48,15 @@ protected:
 public:
     Chart(const std::string &header);
 
-    virtual ~Chart() = default;
-
     virtual void start() = 0;
 
     virtual void stop();
 
     virtual void clear();
 
-    // Getters and setters
-    bool getIsStarted() const { return isStarted; }
+    void setAlphaBeta(double alpha, double beta);
+    void setnumberOfSteps(int numberOfSteps);
+    void setupdateStep(int updateStep);
 
-    void setIsStarted(bool value) { isStarted = value; }
-
-    double getAlpha() const { return alpha; }
-
-    void setAlpha(double value) { alpha = value; }
-
-    double getBeta() const { return beta; }
-
-    void setBeta(double value) { beta = value; }
-
-    double getTau() const { return tau; }
-
-    void setTau(double value) { tau = value; }
-
-    double getMass() const { return mass; }
-
-    void setMass(double value) { mass = value; }
-
-    int getNumberOfSteps() const { return numberOfSteps; }
-
-    void setNumberOfSteps(int value) { numberOfSteps = value; }
-
-    int getCurrentStep() const { return currentStep; }
-
-    void setCurrentStep(int value) { currentStep = value; }
-
-    int getUpdateStep() const { return updateStep; }
-
-    void setUpdateStep(int value) { updateStep = value; }
-
-    int getNumberOfParticles() const { return numberOfParticles; }
-
-    void setNumberOfParticles(int value) {
-        numberOfParticles = value;
-        clear();
-    }
-
-    double getInitialDeviation() const { return initialDeviation; }
-
-    void setInitialDeviation(double value) { initialDeviation = value; }
-
-    void setDataChangedCallback(std::function<void()> callback) {
-        dataChangedCallback = callback;
-    }
+    ~Chart();
 };
