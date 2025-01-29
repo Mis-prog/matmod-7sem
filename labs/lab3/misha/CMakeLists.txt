@@ -12,13 +12,9 @@ target_include_directories(
 
 target_link_libraries(lab3_misha lab3_misha_lib)
 
-#target_compile_options(
-#        lab3_misha
-#        PRIVATE
-#        -O3                      # Оптимизация для скорости
-#        -funroll-loops            # Развёртывание циклов
-#        -march=native             # Использовать инструкцию для текущей архитектуры процессора
-#        -flto                     # Включение Link Time Optimization (LTO) для улучшения оптимизации на этапе линковки
-#        -fno-rtti                 # Отключение RTTI (если не используется, можно ускорить выполнение)
-#        -fomit-frame-pointer
-#)
+target_compile_options(
+        lab3_misha
+        PRIVATE
+        -fno-fast-math
+        -fno-finite-math-only
+)
