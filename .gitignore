@@ -4,5 +4,7 @@ venv/
 cmake-build-debug-cygwin/
 cmake-build-debug-mingw/
 cmake-build-release-cygwin/
-cmake*
 build/
+.vscode/
+cmake*/
+
