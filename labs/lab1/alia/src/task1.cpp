@@ -13,14 +13,14 @@ struct Constants {
     static constexpr double G = 6.67e-11; // гравитационная постоянная
     static constexpr double M1 = 2.0e30; // масса звезды (кг)
     static constexpr double M2 = 6.0e24; // масса планеты (кг)
-    static constexpr double M3 = 7.3e22; // масса астероида (кг)
+    static constexpr double M3 = 7.3e22; // масса спутника (кг)
     static constexpr double R1 = 696340e3; // радиус звезды (м)
     static constexpr double R2 = 6378e3; // радиус планеты (м)
-    static constexpr double R3 = 1737e3; // радиус астероида (м)
+    static constexpr double R3 = 1737e3; // радиус спутника (м)
     static constexpr double R12 = 150e9; // начальное расстояние звезда-планета (м)
-    static constexpr double R23 = 384e6; // начальное расстояние планета-астероид (м)
+    static constexpr double R23 = 384e6; // начальное расстояние планета-спутника (м)
     static constexpr double U2 = 30e3; // начальная скорость планеты (м/с)
-    static constexpr double U3 = 1e3; // начальная скорость астероида (м/с)
+    static constexpr double U3 = 1e3; // начальная скорость спутника (м/с)
 };
 
 // Вспомогательные функции
@@ -36,21 +36,21 @@ public:
     }
 
     static void calculateForces(const state_type &y, state_type &f, double /* t */) {
-        // Координаты и скорости планеты и астероида
+        // Координаты и скорости планеты и спутника
         // Солнце находится в начале координат (0,0)
         double x2 = y[0], vx2 = y[1], y2 = y[2], vy2 = y[3]; // планета
-        double x3 = y[4], vx3 = y[5], y3 = y[6], vy3 = y[7]; // астероид
+        double x3 = y[4], vx3 = y[5], y3 = y[6], vy3 = y[7]; // спутник
 
         // Расчёт расстояний
         double r_12 = std::sqrt(x2 * x2 + y2 * y2); // расстояние от солнца до планеты
-        double r_13 = std::sqrt(x3 * x3 + y3 * y3); // расстояние от солнца до астероида
-        double r_23 = distance(x2, y2, x3, y3); // расстояние между планетой и астероидом
+        double r_13 = std::sqrt(x3 * x3 + y3 * y3); // расстояние от солнца до спутника
+        double r_23 = distance(x2, y2, x3, y3); // расстояние между планетой и спутника
 
         // Скорости
         f[0] = vx2;
         f[2] = vy2; // планета
         f[4] = vx3;
-        f[6] = vy3; // астероид
+        f[6] = vy3; // спутника
 
         // Ускорения для планеты (тело 2)
         f[1] = -Constants::G * Constants::M1 * x2 / std::pow(r_12, 3) +
@@ -59,7 +59,7 @@ public:
         f[3] = -Constants::G * Constants::M1 * y2 / std::pow(r_12, 3) +
                Constants::G * Constants::M3 * (y3 - y2) / std::pow(r_23, 3);
 
-        // Ускорения для астероида (тело 3)
+        // Ускорения для спутника (тело 3)
         f[5] = -Constants::G * Constants::M1 * x3 / std::pow(r_13, 3) +
                Constants::G * Constants::M2 * (x2 - x3) / std::pow(r_23, 3);
 
@@ -121,7 +121,7 @@ int main() {
         Constants::R1 + Constants::R12 + Constants::R2, 0, 0,
         Constants::U2, // планета (x,vx,y,vy)
         Constants::R1 + Constants::R12 + 2 * Constants::R2 + Constants::R23 + Constants::R3, 0, 0,
-        Constants::U3 + Constants::U2 // астероид (x,vx,y,vy)
+        Constants::U3 + Constants::U2 // спутник (x,vx,y,vy)
     };
 
 
@@ -176,7 +176,7 @@ int main() {
 
                 break;
             case 500:
-                // h = 1000; // меняем шаг для уточнения нач данных для второй задачиw
+                // h = 1000; // меняем шаг для уточнения нач данных для второй задачи
                 orbitsX_Spytnik[2].push_back(y[4]);
                 orbitsY_Spytnik[2].push_back(y[6]);
 
