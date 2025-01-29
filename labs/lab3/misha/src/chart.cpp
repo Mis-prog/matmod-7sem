@@ -48,20 +48,20 @@ long double Chart::calcHamiltonian() {
 std::vector<long double> Chart::calcGradV() {
     std::vector<long double> result(numberOfParticles);
 
-    result[0] = calcGradV(offsets[numberOfParticles - 1], offsets[0], offsets[1]);
-    result[numberOfParticles - 1] = calcGradV(offsets[numberOfParticles - 2],
-                                              offsets[numberOfParticles - 1],
-                                              offsets[0]);
+//    result[0] = calcGradV(offsets[numberOfParticles - 1], offsets[0], offsets[1]);
+//    result[numberOfParticles - 1] = calcGradV(offsets[numberOfParticles - 2],
+//                                              offsets[numberOfParticles - 1],
+//                                              offsets[0]);
 
-    for (int i = 1; i < numberOfParticles - 1; ++i) {
+    for (int i = 1 ; i < numberOfParticles - 1; ++i) {
         result[i] = calcGradV(offsets[i - 1], offsets[i], offsets[i + 1]);
     }
 
     return result;
 }
 
-long double Chart::calcGradV(long double qM1,long  double q,long  double qP1) {
-    return -(qP1 - q) + (q - qM1) +
+long double Chart::calcGradV(long double qM1, long double q, long double qP1) {
+    return -(qP1 + q) + (q - qM1) +
            alpha * (-std::pow(qP1 - q, 2) + std::pow(q - qM1, 2)) +
            beta * (-std::pow(qP1 - q, 3) + std::pow(q - qM1, 3));
 }
@@ -91,7 +91,7 @@ void Chart::callDataChanged() {
 }
 
 
-void Chart::setAlphaBeta(long double alpha,long  double beta) {
+void Chart::setAlphaBeta(long double alpha, long double beta) {
     this->alpha = alpha;
     this->beta = beta;
 }

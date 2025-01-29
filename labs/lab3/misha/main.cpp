@@ -2,10 +2,10 @@
 #include "include/symplectic.h"
 
 int main() {
-    Symplectic speedMethods;
-    speedMethods.setAlphaBeta(0, 600);
-    speedMethods.setupdateStep(50);
-    speedMethods.setnumberOfSteps(5e4);
+    Speed speedMethods;
+    speedMethods.setAlphaBeta(0, 500);
+    speedMethods.setupdateStep(500);
+    speedMethods.setnumberOfSteps(1e5);
     speedMethods.start();
     return 0;
 }

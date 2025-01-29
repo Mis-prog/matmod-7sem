@@ -15,6 +15,5 @@ target_link_libraries(lab3_misha lab3_misha_lib)
 target_compile_options(
         lab3_misha
         PRIVATE
-        -fno-fast-math
-        -fno-finite-math-only
+        -O3
 )
