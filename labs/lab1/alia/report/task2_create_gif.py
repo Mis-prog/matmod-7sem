@@ -2,11 +2,12 @@ import pandas as pd
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 
-data = pd.read_csv('../result/task2/full_trajectory_mt-272.60_angle-66.00.csv', sep=' ')[::300]
+data = pd.read_csv('../result/task2/trajectory_mt-272.9458918_angle-152.csv', sep=' ')[::300]
 
 fig, ax = plt.subplots(figsize=(6, 4))
-ax.set_xlim(-63051822463.82 - 5e8, -63051822463.82 + 5e8)
-ax.set_ylim(141005424242.41 - 5e8, 141005424242.41 + 5e8)
+ax.set_xlim(-63051822463.82 - 7e8, -63051822463.82 + 7e8)
+ax.set_ylim(141005424242.41 - 7e8, 141005424242.41 + 7e8)
+ax.scatter(-63051822463.82,141005424242.41,color = 'green')
 line_satellite, = ax.plot([], [], 'b-', label='Траектория спутника')  # Синия линия для спутника
 line_rocket, = ax.plot([], [], 'r-', label='Траектория ракеты')  # Красная линия для ракеты
 point_satellite, = ax.plot([], [], 'bo')  # Точка для спутника
@@ -38,7 +39,7 @@ def update(frame):
 
 
 # Создание анимации
-ani = FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, interval=0.00001)
+ani = FuncAnimation(fig, update, frames = len(data), init_func=init, blit=True, interval=0.00001)
 ani.save('satellite_rocket_trajectory.mp4', writer='ffmpeg', fps=30)
 # plt.legend()
 # plt.show()

@@ -1,5 +1,6 @@
 import re
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Путь к файлу
 file_path = "full_fuel.txt"
@@ -19,9 +20,14 @@ with open(file_path, "r", encoding="utf-8") as file:
             mt, angle = match.groups()
             MT.append(float(mt))
             ANGLE.append(float(angle))
-            
+
+MT=np.array(MT)
+i=MT.argmin()
+
+plt.scatter(ANGLE[i],MT[i],label=f'Минимальное кол-во топлива {MT[i]} для угла {ANGLE[i]}')
 plt.plot(ANGLE, MT)
 plt.xlabel("Угол")
 plt.ylabel("Кол-во топлива")
 plt.grid()
+plt.legend()
 plt.show()
