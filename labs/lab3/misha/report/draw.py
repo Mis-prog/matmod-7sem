@@ -5,7 +5,7 @@ import sys
 
 b = 0
 
-data = np.genfromtxt(f'../result/speed.txt', delimiter=' ')
+data = np.genfromtxt(f'../result/symplectic.txt', delimiter=' ')
 print(len(data))
 fig = plt.figure()
 ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
@@ -32,7 +32,7 @@ def animate(i):
 
 
 anim = FuncAnimation(fig, animate,
-                     frames=fr, interval=200, blit=True)
+                     frames=fr, interval=50, blit=True)
 plt.show()
 
 # anim.save('3_fpu_betta.mp4', writer='ffmpeg', fps=25)
