@@ -1,28 +1,28 @@
 import re
 import matplotlib.pyplot as plt
 
-# # Путь к файлу
-# file_path = "full_fuel.txt"
-#
-# # Регулярное выражение
-# pattern = r"mt\s*=\s*([\d.]+)\s*для\s*угла\s*(\d+)"
-#
-#
-# MT=[]
-# ANGLE=[]
-# # Открываем файл и считываем построчно
-# with open(file_path, "r", encoding="utf-8") as file:
-#     for line in file:
-#         # Ищем совпадения в текущей строке
-#         match = re.search(pattern, line)
-#         if match:
-#             mt, angle = match.groups()
-#             MT.append(float(mt))
-#             ANGLE.append(float(angle))
-#
-# plt.plot(ANGLE, MT)
-# plt.xlabel("Угол")
-# plt.ylabel("Кол-во топлива")
+# Путь к файлу
+file_path = "full_fuel.txt"
+
+# Регулярное выражение
+pattern = r"mt\s*=\s*([\d.]+)\s*для\s*угла\s*(\d+)"
+
+
+MT=[]
+ANGLE=[]
+# Открываем файл и считываем построчно
+with open(file_path, "r", encoding="utf-8") as file:
+    for line in file:
+        # Ищем совпадения в текущей строке
+        match = re.search(pattern, line)
+        if match:
+            mt, angle = match.groups()
+            MT.append(float(mt))
+            ANGLE.append(float(angle))
+
+plt.plot(ANGLE, MT, label = 'Перебор')
+plt.xlabel("Угол")
+plt.ylabel("Кол-во топлива")
 # plt.grid()
 # plt.show()
 
@@ -40,9 +40,10 @@ x_values = [value[0] for value in values]
 y_values = [value[1] for value in values]
 
 # Построение графика
-plt.plot(x_values, y_values)
-plt.xlabel('X')
-plt.ylabel('Y')
-plt.title('График зависимости Y от X')
+# plt.plot(x_values, y_values,label ='Оптимизация')
+# plt.xlabel('X')
+# plt.ylabel('Y')
+# plt.title('График зависимости Y от X')
+plt.legend()
 plt.grid(True)
 plt.show()
