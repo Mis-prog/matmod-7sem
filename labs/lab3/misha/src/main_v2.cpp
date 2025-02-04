@@ -1,10 +1,9 @@
-
+// Matmod3.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+//
 #include <omp.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <time.h>
-
 using namespace std;
 double F(double q_last, double q, double q_next, double m, double alpha, double beta) {
 
@@ -25,8 +24,7 @@ double H(vector<double>q, vector<double>v, double m, double alpha, double beta) 
 vector<vector<double>> SpeedVerle(vector<double> q, vector<double>v, double alpha, double beta, double tau, int N,double m) {
     // double m = 2.0;
     double l = 1;
-    string title = "../labs/lab3/misha/result/verle.txt";
-    ofstream f(title);
+    ofstream f("../labs/lab3/misha/result/speed.txt");
     vector<double> a(q.size(), 0);
     int s = q.size() - 1;
     for (int t = 0; t < N; t++) {
@@ -44,7 +42,7 @@ vector<vector<double>> SpeedVerle(vector<double> q, vector<double>v, double alph
         }
         a[s] = F(q[s - 1], q[s], q[0], m, alpha, beta)/l;
         v[s] = v[s] + 0.5 * a[s] * tau;
-        if (t %100== 0) {
+        if (t %1000== 0) {
             for (int i = 0; i < v.size(); i++) f <<v[i] << " ";
             f << endl;
         }
@@ -53,13 +51,11 @@ vector<vector<double>> SpeedVerle(vector<double> q, vector<double>v, double alph
     f.close();
     return { q,v };
 }
-
 double ksi = 0.1931833275037836;
 vector<vector<double>> SimplexVerle(vector<double> q, vector<double>v, double alpha, double beta, double tau, int N,double m) {
     vector<double> a(q.size(), 0);
     int s = q.size() - 1;
-    string title = "../labs/lab3/misha/result/symplectic.txt";
-    ofstream f(title);
+    ofstream f("../labs/lab3/misha/result/simplex.txt");
     for (int t = 0; t < N; t++) {
 
         for (int i = 0; i < s + 1; i++) {
@@ -84,33 +80,43 @@ vector<vector<double>> SimplexVerle(vector<double> q, vector<double>v, double al
             v[i] = v[i] + 0.5 * a[i] * tau;
             q[i] = q[i] + v[i] * tau * ksi;
         }
-        if (t % 100 == 0) {
+        if (t % 1000 == 0) {
+            //  cout << t + 1 << endl;
+            //    cout << v[s / 2] << " " << v[s / 2 + 1] << endl;
             for (int i = 0; i < v.size(); i++) f << v[i] << " ";
             f << endl;
         }
     }
-
     f.close();
     return { q,v };
 }
-
 int main()
 {
+    // main1();
     int N = 1000;
     vector<double> q(N, 0);
     vector<double>v(N, 0);
-    double m = 0.5;
-    q[N / 2 - 1] = 0.7;
-    q[N / 2 ] = -0.7;
-    double a = 0;
-    double b = 80;
+    double m = 1;
+    double l = 1;
+    q[N / 2 - 1] = 0.5;
+    q[N / 2 ] = -0.5;
+    //  v[N / 2 - 1] = -0.7;
+    //  v[N / 2] = 0.7;
+    double a = 0.0;
+    double b = 100.0;
+    std::cout << "Введите a и b:\n";
+    std::cin >> a >> b;
     double H0 = H(q, v, m, a, b);
-    cout << "H0: " << H0 << endl;
+    cout << H0 << endl;
     double start = clock();
-//    auto res = SpeedVerle(q, v, a, b, 0.01, 1e5, m);
-    auto res = SimplexVerle(q, v, a, b, 0.01,1e5,m);
+    auto res = SimplexVerle(q, v, a, b, 0.01,1000000,m);
     double finish = clock();
-    cout << "Time: " << (finish - start) / CLOCKS_PER_SEC << endl;
+    cout << (finish - start) / CLOCKS_PER_SEC << endl;
     //  for (int i = 0; i < res[0].size(); i++) cout << res[0][i] << " " << res2[0][i] << endl;
     cout << (H(res[0], res[1], m, a, b) - H0)/H0 << " ";// << H(res2[0], res2[1], 1, a, b) - H0 << endl;
 }
+
+
+// 1
+// 2 127(+-) 129.1
+// 3
