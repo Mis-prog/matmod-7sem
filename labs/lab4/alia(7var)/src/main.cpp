@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <fstream>
 #include <time.h>
-#include "math.h"
+#include <math.h>
 
 double f(double t, double x, double y, double z, double a, double b) {
     return a * (y - x);
@@ -15,17 +15,18 @@ double g(double t, double x, double y, double z, double a, double b) {
 }
 
 double h(double t, double x, double y, double z, double a, double b) {
-    return -8. / 3 * z + x * y;
+    return -8/3 * z + x * y;
 }
 
 std::vector<double> new_point(double f(double, double, double, double, double, double),
-                              double g(double, double, double, double, double, double),
-                              double h(double, double, double, double, double, double),
-                              double t, double x, double y, double z,
-                              double step, double a, double b) {
+                            double g(double, double, double, double, double, double),
+                            double h(double, double, double, double, double, double),
+                            double t, double x, double y, double z, 
+                            double step, double a, double b)
+{
     double kx0, ky0, kz0, kx1, ky1, kz1, kx2, ky2, kz2, kx3, ky3, kz3;
 
-    kx0 = f(t, x, y, z, a, b);
+    kx0 = f(t, x, y ,z, a, b);
     ky0 = g(t, x, y, z, a, b);
     kz0 = h(t, x, y, z, a, b);
 
@@ -50,13 +51,13 @@ std::vector<double> new_point(double f(double, double, double, double, double, d
 
 void write_file(double a, double b,
                 std::vector<double> t,
-                std::vector<double> x,
-                std::vector<double> y,
-                std::vector<double> z) {
-    std::ofstream fout;
-    std::ofstream fout_stat;
-    fout.open("../labs/lab4/alia(7var)/result/result.txt");
-    fout_stat.open("../labs/lab4/alia(7var)/result/stat_points.txt");
+                std::vector<double> x, 
+                std::vector<double> y, 
+                std::vector<double> z)
+{
+    std::ofstream fout, fout_stat;
+    fout.open("../labs/lab4/alia/result/result.txt");
+    fout_stat.open("../labs/lab4/alia/result/stat_points.txt");
 
     if (t.size() != x.size() || t.size() != y.size() || t.size() != z.size()) {
         std::cout << "Dimension t is not equal with other dimensions" << std::endl;
@@ -65,35 +66,36 @@ void write_file(double a, double b,
     }
 
     fout_stat << a << " " << b << std::endl;
-    fout_stat << 8. / 3 * sqrt(b + 1) << " " << 8. / 3 * sqrt(3 * b) << " " << b + 1 << std::endl;
-    fout_stat << -8. / 3 * sqrt(3 * b) << " " << -8. / 3 * sqrt(3 * b) << " " << b + 1 << std::endl;
+    fout_stat << sqrt(8/3 * ( b + 1)) << " " << sqrt(8/3 * (b + 1)) << " " << b + 1 << std::endl;
+    fout_stat << -sqrt(8/3 * (b + 1)) << " " << -sqrt(8/3 * (b + 1)) << " " << b + 1<< std::endl;
     fout_stat << 0 << " " << 0 << " " << 0 << std::endl;
     fout_stat.close();
 
-    for (int i = 0; i < x.size(); i++) {
+    for (int i = 0; i < x.size(); i++) 
+    {
         fout << t[i] << " " << x[i] << " " << y[i] << " " << z[i] << "\n";
     }
 
     fout.close();
 }
 
-int main() {
+int main()
+{
     double step = 0.01;
-    int n = 100000;
+    int n = 10000;
     double t0 = 0, t1 = t0 + n * step;
     double a = 1, b = 10; //
-    std::cout << "Введите значения a и b\n";
-    std::cin >> a >> b;
+    std::cout << "Введите  a и b: " << std::endl;
+    std::cin >> a >> b; 
     double x0 = 1, y0 = 1, z0 = 1;
 
     std::vector<double> t(n), x(n), y(n), z(n);
     std::vector<double> point(3);
     double t_;
 
-    x[0] = x0;
-    y[0] = y0;
-    z[0] = z0;
-    for (int i = 0; i < n - 1; i++) {
+    x[0] = x0; y[0] = y0; z[0] = z0;
+    for (int i = 0; i < n - 1; i++)
+    {
         t_ = i * step;
         point = new_point(f, g, h, t_, x[i], y[i], z[i], step, a, b);
         t[i + 1] = t_;
@@ -103,7 +105,7 @@ int main() {
     }
 
     write_file(a, b, t, x, y, z);
-
+    
     return 0;
 }
 
