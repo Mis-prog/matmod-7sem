@@ -10,7 +10,7 @@ fig = plt.figure()
 my=max([max(dat) for dat in data])
 my=my/2
 
-ax = plt.axes(xlim=(0, len(data[0])), ylim=(-0.5, 0.5))
+ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
 
 x=list(range(len(data[0])))
 line, = ax.plot(x, data[0], lw=2)
@@ -27,5 +27,5 @@ def animate(i):
 
 
 anim = FuncAnimation(fig, animate,
-                    frames=fr, interval=50, blit=True)
+                    frames=fr, interval=600, blit=True)
 plt.show()

@@ -162,11 +162,7 @@ void simplexVerle(std::vector<double>& q, std::vector<double>& v, std::vector<do
             q[i] = -q[q.size() - 1 - i];
         }
 
-        q[0] = q[n - 2];
-        v[0] = v[n - 2];
 
-        q[n - 1] = q[1];
-        v[n - 1] = v[1];
         t = clock() - t;
 #ifndef NDEBUG
         //std::cout << "Time for one iteration" << t << " clicks (" << ((double)t) / CLOCKS_PER_SEC << " seconds).\n";

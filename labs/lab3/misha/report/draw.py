@@ -5,11 +5,9 @@ import sys
 
 b = 0
 
-data = np.genfromtxt(f'../result/symplectic.txt', delimiter=' ',max_rows=700)
+data = np.genfromtxt(f'../result/simplex.txt', delimiter=' ')
 print(len(data))
 fig = plt.figure()
-my = max([max(dat) for dat in data])
-my = my / 2
 ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
 
 x = list(range(len(data[0])))
@@ -34,7 +32,7 @@ def animate(i):
 
 
 anim = FuncAnimation(fig, animate,
-                     frames=fr, interval=20, blit=True)
-# plt.show()
+                     frames=1000, interval=100, blit=True)
+plt.show()
 
-anim.save('3_fpu_betta.mp4', writer='ffmpeg', fps=25)
+# anim.save('2_fpu_betta.mp4', writer='ffmpeg', fps=25)
