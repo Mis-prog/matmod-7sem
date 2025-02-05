@@ -70,7 +70,7 @@ void write_file(double a, double b,
     fout_stat << a << " " << b << std::endl;
     fout_stat << sqrt(3*b) << " " << sqrt(3*b) << " " << b << std::endl;
     fout_stat << -sqrt(3*b) << " " << -sqrt(3*b) << " " << b << std::endl;
-    fout_stat << 0 << " " << 0 << " " << 0 << std::endl;
+    fout_stat << 0 << " " << 0 << " " << 0 << stsd::endl;
     fout_stat.close();
 
     for (int i = 0; i < x.size(); i++) {
