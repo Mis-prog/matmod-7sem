@@ -125,6 +125,4 @@ void SimplexVerleNew(double *q, double *v, double *a, int size, double alpha, do
         v[i] = -v[s - i];
         q[i] = -q[s - i];
     }
-
-
 }
