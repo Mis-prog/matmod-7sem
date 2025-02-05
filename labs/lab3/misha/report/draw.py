@@ -32,7 +32,7 @@ def animate(i):
 
 
 anim = FuncAnimation(fig, animate,
-                     frames=1000, interval=100, blit=True)
+                     frames=1000, interval=200, blit=True)
 plt.show()
 
 # anim.save('2_fpu_betta.mp4', writer='ffmpeg', fps=25)
