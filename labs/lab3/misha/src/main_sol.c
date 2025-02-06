@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
+#include <windows.h>
 
 double F(double q_last, double q, double q_next, double m, double alpha, double beta) {
 
@@ -87,10 +87,10 @@ void SimplexVerle(double *q, double *v, int size, double alpha, double beta, dou
             q[i] = q[i] + v[i] * tau * ksi;
         }
 
-        for (int i = s / 2; i >= 0; i--) {
-            v[i] = -v[s - i];
-            q[i] = -q[s - i];
-        }
+//        for (int i = s / 2; i >= 0; i--) {
+//            v[i] = -v[s - i];
+//            q[i] = -q[s - i];
+//        }
 
         if (t % 1000 == 0) {
             for (int i = 0; i < size; i++) {
@@ -104,6 +104,7 @@ void SimplexVerle(double *q, double *v, int size, double alpha, double beta, dou
 }
 
 int main() {
+    SetConsoleOutputCP(CP_UTF8);
     int N = 1000;
     int size = N;
     double *q = (double *) malloc(size * sizeof(double));
@@ -111,8 +112,8 @@ int main() {
     double m = 1;
     double alpha = 0.0;
     double beta = 100.0;
-    printf("Введите значение для alpha: ");
-    scanf("%lf", &alpha);
+//    printf("Введите значение для alpha: ");
+//    scanf("%lf", &alpha);
 
     printf("Введите значение для beta: ");
     scanf("%lf", &beta);
@@ -121,13 +122,13 @@ int main() {
         v[i] = 0.0;
     }
 
-    q[N / 2 - 1] = 0.5;
-    q[N / 2] = -0.5;
+    q[N / 2 - 1] = -0.5;
+    q[N / 2] = 0.5;
 
     double H0 = H(q, v, size, m, alpha, beta);
     printf("H0: %f\n", H0);
 
-    SimplexVerle(q, v, size, alpha, beta, 0.01, 1000000, m);
+    SimplexVerle(q, v, size, alpha, beta, 0.01, 5e5, m);
 
     printf("Final H: %f\n", H(q, v, size, m, alpha, beta));
 

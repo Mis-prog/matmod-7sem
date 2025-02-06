@@ -1,30 +1,64 @@
-from cffi import FFI
+from lab3 import lib
 import numpy as np
+import cffi
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import sys
 
-ffi = FFI()
+ffi = cffi.FFI()
 
-lib = ffi.dlopen(r"cyglab3_misha_lib.dll")
-
-ffi.cdef("""
-   void SimplexVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m, double *result_v);
-""")
-
-lib.SimplexVerle()
-
-alpha = 0
-beta = 100
-tau = 0.01
+# Инициализация данных
 N = 1000
-
+count = int(1e6)
+tau = 0.0316
+alpha = 0
+beta = 125
 q = np.zeros(N, dtype=np.float64)
 v = np.zeros(N, dtype=np.float64)
-result_v = np.zeros(N, dtype=np.float64)
+a = np.zeros(N, dtype=np.float64)
+q[N // 2] = 0.5
+q[N // 2 - 1] = -0.5
 
-q_c = ffi.cast("double*", q.ctypes.data)
-v_c = ffi.cast("double*", v.ctypes.data)
-result_v_c = ffi.cast("double*", result_v.ctypes.data)
+q_ptr = ffi.cast("double*", ffi.from_buffer(q))
+v_ptr = ffi.cast("double*", ffi.from_buffer(v))
+a_ptr = ffi.cast("double*", ffi.from_buffer(a))
 
-print(q_c)
-# lib.SimplexVerle(q_c, v_c, N, alpha, beta, tau, 1000000, 1, result_v_c)
+# lib.SimplexVerle(q_ptr, v_ptr, N, 0.0, 100.0, 0.01, 1000000, 1.0)
 
-# print(result_v[:10])
+data = []
+print(f'Начальный гамильтон: {lib.H(q_ptr, v_ptr, N, 1, alpha, beta)}')
+for i in range(count):
+    lib.SimplexVerleNew(q_ptr, v_ptr, a_ptr, N, alpha, beta, tau, 1)
+    if i % 1000 == 0:
+        data.append(v.copy())
+print(f'Конечный гамильтон: {lib.H(q_ptr, v_ptr, N, 1, alpha, beta)}')
+
+
+fig = plt.figure()
+ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
+
+x = np.arange(len(data[0]))
+line, = ax.plot(x, data[0], lw=2)
+
+st = 0
+fr = len(data)
+
+
+def init():
+    line.set_data(x, data[0])
+    return line,
+
+
+def animate(i):
+    if st + i < fr:
+        line.set_data(x, data[st + i])
+        return line,
+    sys.exit(1)
+
+
+anim = FuncAnimation(fig, animate, frames=len(data), interval=50, blit=True)
+
+plt.show()
+
+
+# 203 один

@@ -1,6 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include "stdio.h"
+#include "math.h"
+#include "stdlib.h"
+
+#include "main_lib.h"
 
 
 double F(double q_last, double q, double q_next, double m, double alpha, double beta) {
@@ -97,4 +99,36 @@ SimplexVerle(double *q, double *v, int size, double alpha, double beta, double t
         }
     }
     free(a);
+}
+
+void SimplexVerleNew(double *q, double *v, double *a, int size, double alpha, double beta, double tau, double m) {
+    int s = size - 1;
+
+    for (int i = 0; i < s + 1; i++) {
+        q[i] = q[i] + v[i] * tau * ksi;
+    }
+    a[0] = F(q[s], q[0], q[1], m, alpha, beta);
+    for (int i = 1; i < s; i++) {
+        a[i] = F(q[i - 1], q[i], q[i + 1], m, alpha, beta);
+    }
+    a[s] = F(q[s - 1], q[s], q[0], m, alpha, beta);
+    for (int i = 0; i < s + 1; i++) {
+        v[i] = v[i] + 0.5 * a[i] * tau;
+        q[i] = q[i] + v[i] * tau * (1 - 2 * ksi);
+    }
+    a[0] = F(q[s], q[0], q[1], m, alpha, beta);
+    for (int i = 1; i < s; i++) {
+        a[i] = F(q[i - 1], q[i], q[i + 1], m, alpha, beta);
+    }
+    a[s] = F(q[s - 1], q[s], q[0], m, alpha, beta);
+
+    for (int i = 0; i < s + 1; i++) {
+        v[i] = v[i] + 0.5 * a[i] * tau;
+        q[i] = q[i] + v[i] * tau * ksi;
+    }
+
+    for (int i = s / 2; i >= 0; i--) {
+        v[i] = -v[s - i];
+        q[i] = -q[s - i];
+    }
 }
