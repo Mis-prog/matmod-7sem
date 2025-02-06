@@ -23,7 +23,8 @@ double H(double *q, double *v, int size, double m, double alpha, double beta) {
     return summ;
 }
 
-void SpeedVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m) {
+void
+SpeedVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m, double *result_v) {
     double l = 1;
     double *a = (double *) malloc(size * sizeof(double));
     int s = size - 1;
@@ -44,7 +45,9 @@ void SpeedVerle(double *q, double *v, int size, double alpha, double beta, doubl
         a[s] = F(q[s - 1], q[s], q[0], m, alpha, beta) / l;
         v[s] = v[s] + 0.5 * a[s] * tau;
         if (t % 1000 == 0) {
-
+            for (int i = 0; i < size; i++) {
+                result_v[i] = v[i];
+            }
         }
     }
     free(a);
@@ -52,7 +55,8 @@ void SpeedVerle(double *q, double *v, int size, double alpha, double beta, doubl
 
 double ksi = 0.1931833275037836;
 
-void SimplexVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m) {
+void
+SimplexVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m, double *result_v) {
     double *a = (double *) malloc(size * sizeof(double));
     int s = size - 1;
 
@@ -87,7 +91,9 @@ void SimplexVerle(double *q, double *v, int size, double alpha, double beta, dou
         }
 
         if (t % 1000 == 0) {
-
+            for (int i = 0; i < size; i++) {
+                result_v[i] = v[i];
+            }
         }
     }
     free(a);
