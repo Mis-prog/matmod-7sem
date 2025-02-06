@@ -87,10 +87,10 @@ void SimplexVerle(double *q, double *v, int size, double alpha, double beta, dou
             q[i] = q[i] + v[i] * tau * ksi;
         }
 
-        for (int i = s / 2; i >= 0; i--) {
-            v[i] = -v[s - i];
-            q[i] = -q[s - i];
-        }
+//        for (int i = s / 2; i >= 0; i--) {
+//            v[i] = -v[s - i];
+//            q[i] = -q[s - i];
+//        }
 
         if (t % 1000 == 0) {
             for (int i = 0; i < size; i++) {
@@ -128,7 +128,7 @@ int main() {
     double H0 = H(q, v, size, m, alpha, beta);
     printf("H0: %f\n", H0);
 
-    SimplexVerle(q, v, size, alpha, beta, 0.01, 1000000, m);
+    SimplexVerle(q, v, size, alpha, beta, 0.01, 5e5, m);
 
     printf("Final H: %f\n", H(q, v, size, m, alpha, beta));
 
