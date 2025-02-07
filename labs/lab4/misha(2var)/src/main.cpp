@@ -5,6 +5,7 @@
 #include <fstream>
 #include <time.h>
 #include <math.h>
+#include <windows.h>
 
 double f(double t, double x, double y, double z, double a, double b) {
     return a * (y - x);
@@ -58,8 +59,8 @@ void write_file(double a, double b,
 {
     std::ofstream fout;
     std::ofstream fout_stat;
-    fout.open("../labs/lab4/misha/result/result.txt");
-    fout_stat.open("../labs/lab4/misha/result/stat_points.txt");
+    fout.open("../labs/lab4/misha(2var)/result/result.txt");
+    fout_stat.open("../labs/lab4/misha(2var)/result/stat_points.txt");
 
     if (t.size() != x.size() || t.size() != y.size() || t.size() != z.size()) {
         std::cout << "Dimension t is not equal with other dimensions" << std::endl;
@@ -70,7 +71,7 @@ void write_file(double a, double b,
     fout_stat << a << " " << b << std::endl;
     fout_stat << sqrt(3*b) << " " << sqrt(3*b) << " " << b << std::endl;
     fout_stat << -sqrt(3*b) << " " << -sqrt(3*b) << " " << b << std::endl;
-    fout_stat << 0 << " " << 0 << " " << 0 << stsd::endl;
+    fout_stat << 0 << " " << 0 << " " << 0 << std::endl;
     fout_stat.close();
 
     for (int i = 0; i < x.size(); i++) {
@@ -83,13 +84,15 @@ void write_file(double a, double b,
 
 int main()
 {
+    SetConsoleOutputCP(CP_UTF8);
     double step = 0.01;
-    int n = 100000;
+    int n = 1000000;
     double t0 = 0, t1 = t0 + n * step;
     std::cout << "Введите  a и b: " << std::endl;
     double a = - 0.01 , b = 2.9; 
     std::cin >> a >> b; 
-    double x0 = 1, y0 = 1, z0 = 1;
+   double x0 = -0.1, y0 = -0.1, z0 = -0.1;
+
 
     std::vector<double> t(n), x(n), y(n), z(n);
     std::vector<double> point(3);
