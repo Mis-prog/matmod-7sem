@@ -10,14 +10,15 @@ ffi = cffi.FFI()
 # Инициализация данных
 N = 1000
 count = int(1e6)
-tau = 0.0316
+tau = 0.01
 alpha = 0
-beta = 125
+beta = 305
+
 q = np.zeros(N, dtype=np.float64)
 v = np.zeros(N, dtype=np.float64)
 a = np.zeros(N, dtype=np.float64)
-q[N // 2] = 0.5
-q[N // 2 - 1] = -0.5
+q[N // 2] = -0.5
+q[N // 2 - 1] = 0.5
 
 q_ptr = ffi.cast("double*", ffi.from_buffer(q))
 v_ptr = ffi.cast("double*", ffi.from_buffer(v))
@@ -33,9 +34,8 @@ for i in range(count):
         data.append(v.copy())
 print(f'Конечный гамильтон: {lib.H(q_ptr, v_ptr, N, 1, alpha, beta)}')
 
-
 fig = plt.figure()
-ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
+ax = plt.axes(xlim=(0, len(data[0])), ylim=(-1, 1))
 
 x = np.arange(len(data[0]))
 line, = ax.plot(x, data[0], lw=2)
@@ -56,9 +56,11 @@ def animate(i):
     sys.exit(1)
 
 
-anim = FuncAnimation(fig, animate, frames=len(data), interval=50, blit=True)
+anim = FuncAnimation(fig, animate, frames=1000, interval=50, blit=True)
+# anim.save('2_fpu_betta.mp4', writer='ffmpeg', fps=25)
 
 plt.show()
 
-
-# 203 один
+# 165 0.5 один
+#
+#

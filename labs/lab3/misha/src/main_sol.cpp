@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <omp.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
 #include <windows.h>
+
+using namespace std;
 
 double F(double q_last, double q, double q_next, double m, double alpha, double beta) {
 
@@ -14,21 +17,22 @@ double Vf(double alpha, double beta, double r) {
     return r * r / 2 + alpha * r * r * r / 3 + beta * r * r * r * r / 4;
 }
 
-double H(double *q, double *v, int size, double m, double alpha, double beta) {
+double H(vector<double> q, vector<double> v, double m, double alpha, double beta) {
     double summ = 0;
-    for (int i = 0; i < size - 1; i++) {
+    for (int i = 0; i < q.size() - 1; i++) {
         summ += (m * v[i] * v[i] / 2 + Vf(alpha, beta, q[i + 1] - q[i]));
     }
-    summ += (m * v[size - 1] * v[size - 1] / 2 + Vf(alpha, beta, (q[0] - q[size - 1])));
+    summ += (m * v[q.size() - 1] * v[q.size() - 1] / 2 + Vf(alpha, beta, (q[0] - q[q.size() - 1])));
     return summ;
 }
 
-void SpeedVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m) {
+vector<vector<double>>
+SpeedVerle(vector<double> q, vector<double> v, double alpha, double beta, double tau, int N, double m) {
+    // double m = 2.0;
     double l = 1;
-    double *a = (double *) malloc(size * sizeof(double));
-    int s = size - 1;
-    FILE *f = fopen("../labs/lab3/misha/result/verle.txt", "w");
-
+    ofstream f("speed.txt");
+    vector<double> a(q.size(), 0);
+    int s = q.size() - 1;
     for (int t = 0; t < N; t++) {
 
         for (int i = 0; i < s + 1; i++) {
@@ -45,23 +49,22 @@ void SpeedVerle(double *q, double *v, int size, double alpha, double beta, doubl
         a[s] = F(q[s - 1], q[s], q[0], m, alpha, beta) / l;
         v[s] = v[s] + 0.5 * a[s] * tau;
         if (t % 1000 == 0) {
-            for (int i = 0; i < size; i++) {
-                fprintf(f, "%f ", v[i]);
-            }
-            fprintf(f, "\n");
+            for (int i = 0; i < v.size(); i++) f << v[i] << " ";
+            f << endl;
         }
     }
-    fclose(f);
-    free(a);
+
+    f.close();
+    return {q, v};
 }
 
 double ksi = 0.1931833275037836;
 
-void SimplexVerle(double *q, double *v, int size, double alpha, double beta, double tau, int N, double m) {
-    double *a = (double *) malloc(size * sizeof(double));
-    int s = size - 1;
-    FILE *f = fopen("../labs/lab3/misha/result/simplex.txt", "w");
-
+vector<vector<double>>
+SimplexVerle(vector<double> q, vector<double> v, double alpha, double beta, double tau, int N, double m) {
+    vector<double> a(q.size(), 0);
+    int s = q.size() - 1;
+    ofstream f("../labs/lab3/misha/result/simplex.txt");
     for (int t = 0; t < N; t++) {
 
         for (int i = 0; i < s + 1; i++) {
@@ -87,53 +90,44 @@ void SimplexVerle(double *q, double *v, int size, double alpha, double beta, dou
             q[i] = q[i] + v[i] * tau * ksi;
         }
 
-//        for (int i = s / 2; i >= 0; i--) {
-//            v[i] = -v[s - i];
-//            q[i] = -q[s - i];
-//        }
-
+        for (int i = s / 2; i >= 0; i--) {
+            v[i] = -v[s - i];
+            q[i] = -q[s - i];
+        }
         if (t % 1000 == 0) {
-            for (int i = 0; i < size; i++) {
-                fprintf(f, "%f ", v[i]);
-            }
-            fprintf(f, "\n");
+            //  cout << t + 1 << endl;
+            //    cout << v[s / 2] << " " << v[s / 2 + 1] << endl;
+            for (int i = 0; i < v.size(); i++) f << v[i] << " ";
+            f << endl;
         }
     }
-    fclose(f);
-    free(a);
+    f.close();
+    return {q, v};
 }
 
 int main() {
+    // main1();
     SetConsoleOutputCP(CP_UTF8);
     int N = 1000;
-    int size = N;
-    double *q = (double *) malloc(size * sizeof(double));
-    double *v = (double *) malloc(size * sizeof(double));
+    vector<double> q(N, 0);
+    vector<double> v(N, 0);
     double m = 1;
-    double alpha = 0.0;
-    double beta = 100.0;
-//    printf("Введите значение для alpha: ");
-//    scanf("%lf", &alpha);
-
-    printf("Введите значение для beta: ");
-    scanf("%lf", &beta);
-    for (int i = 0; i < N; i++) {
-        q[i] = 0.0;
-        v[i] = 0.0;
-    }
-//    q[N / 2 - 1] = 1;
-//    q[N / 2 ] = - 1;
-//    v[N / 2 - 1] = 0.7;
-//    v[N / 2] = -0.7;
-
-    double H0 = H(q, v, size, m, alpha, beta);
-    printf("H0: %f\n", H0);
-
-    SimplexVerle(q, v, size, alpha, beta, 0.01, 5e5, m);
-
-    printf("Final H: %f\n", H(q, v, size, m, alpha, beta));
-
-    free(q);
-    free(v);
-    return 0;
+    double l = 1;
+    q[N / 2 - 1] = 1;
+    q[N / 2] = -1;
+    //  v[N / 2 - 1] = -0.7;
+    //  v[N / 2] = 0.7;
+    double a = 0.0;
+    double b = 50.0;
+    std::cout << "Введите a и b\n";
+    std::cin >> a >> b;
+    double H0 = H(q, v, m, a, b);
+    cout << H0 << endl;
+    double start = clock();
+    auto res = SimplexVerle(q, v, a, b, 0.01, 1e6 , m);
+    double finish = clock();
+    cout << (finish - start) / CLOCKS_PER_SEC << endl;
+    //  for (int i = 0; i < res[0].size(); i++) cout << res[0][i] << " " << res2[0][i] << endl;
+    cout << (H(res[0], res[1], m, a, b) - H0) / H0 << " ";// << H(res2[0], res2[1], 1, a, b) - H0 << endl;
 }
+
