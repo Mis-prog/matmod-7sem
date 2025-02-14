@@ -56,8 +56,8 @@ def animate(i):
     sys.exit(1)
 
 
-anim = FuncAnimation(fig, animate, frames=900, interval=50, blit=True)
-anim.save('../report/3_fpu_betta.mp4', writer='ffmpeg', fps=25)
+anim = FuncAnimation(fig, animate, frames=900, interval=100, blit=True)
+anim.save('../report/3_fpu_betta.mp4', writer='ffmpeg', fps=10)
 
 # plt.show()
 
