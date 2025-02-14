@@ -80,19 +80,19 @@ void write_file(double a, double b,
 
     fout.close();
 }
-
+// -0.01 2
 
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
     double step = 0.01;
-    int n = 1000000;
+    int n = 10000;
     double t0 = 0, t1 = t0 + n * step;
     std::cout << "Введите  a и b: " << std::endl;
-    double a = - 0.01 , b = 2.9; 
+    double a = 1 , b = -1;
     std::cin >> a >> b; 
-   double x0 = -0.1, y0 = -0.1, z0 = -0.1;
-
+   double x0 = sqrt(3*b)+2, y0 = sqrt(3*b)+2 , z0 = b+2;
+//    double x0 = 30, y0 = 30 , z0 = 30;
 
     std::vector<double> t(n), x(n), y(n), z(n);
     std::vector<double> point(3);
