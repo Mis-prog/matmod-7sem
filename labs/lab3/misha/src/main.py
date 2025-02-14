@@ -12,7 +12,7 @@ N = 1000
 count = int(1e6)
 tau = 0.01
 alpha = 0
-beta = 305
+beta = 151
 
 q = np.zeros(N, dtype=np.float64)
 v = np.zeros(N, dtype=np.float64)
@@ -35,7 +35,7 @@ for i in range(count):
 print(f'Конечный гамильтон: {lib.H(q_ptr, v_ptr, N, 1, alpha, beta)}')
 
 fig = plt.figure()
-ax = plt.axes(xlim=(0, len(data[0])), ylim=(-1, 1))
+ax = plt.axes(xlim=(0, len(data[0])), ylim=(-4, 4))
 
 x = np.arange(len(data[0]))
 line, = ax.plot(x, data[0], lw=2)
@@ -56,10 +56,10 @@ def animate(i):
     sys.exit(1)
 
 
-anim = FuncAnimation(fig, animate, frames=1000, interval=50, blit=True)
-# anim.save('2_fpu_betta.mp4', writer='ffmpeg', fps=25)
+anim = FuncAnimation(fig, animate, frames=900, interval=50, blit=True)
+anim.save('../report/3_fpu_betta.mp4', writer='ffmpeg', fps=25)
 
-plt.show()
+# plt.show()
 
 # 165 0.5 один
 #
