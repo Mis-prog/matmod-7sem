@@ -91,8 +91,9 @@ int main()
     std::cout << "Введите  a и b: " << std::endl;
     double a = 1 , b = -1;
     std::cin >> a >> b; 
-   double x0 = sqrt(3*b)+2, y0 = sqrt(3*b)+2 , z0 = b+2;
+//   double x0 = sqrt(3*b)+2, y0 = sqrt(3*b)+2 , z0 = b+2;
 //    double x0 = 30, y0 = 30 , z0 = 30;
+    double x0 = 0.1, y0 = 0.1 , z0 = 0.1;
 
     std::vector<double> t(n), x(n), y(n), z(n);
     std::vector<double> point(3);
