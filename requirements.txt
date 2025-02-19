@@ -2,4 +2,4 @@ matplotlib
 pandas
 scipy 
 jupyter
-numba
+tqdm
