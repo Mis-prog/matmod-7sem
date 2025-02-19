@@ -22,7 +22,7 @@ class Constants:
     
 r12y0, r12x0 = 0 , Constants.R1 + Constants.R12 + Constants.R2
 
-data = pd.read_csv('trajectory_mt-5392.25708722_angle-260.7663678.csv', sep=' ')[::200]
+data = pd.read_csv('trajectory_mt-5241.7_angle-69.5.csv', sep=' ')[::200]
 
 fig, ax = plt.subplots(figsize=(6, 4))
 ax.set_xlim(r12x0- 2e9, r12x0 + 2e9)
@@ -60,8 +60,8 @@ def update(frame):
 
 # Создание анимации
 ani = FuncAnimation(fig, update, frames=len(data), init_func=init, blit=True, interval=1)
-# plt.grid()
-# plt.legend()
+plt.grid()
+plt.legend()
 # plt.show()
 
 ani.save('satellite_rocket_trajectory.mp4', writer='ffmpeg', fps=30)
